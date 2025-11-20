@@ -14,8 +14,15 @@ body {
 
 .app {
   max-width: 960px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+main {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -36,6 +43,20 @@ body {
 .app-header h1 {
   font-size: 1.5rem;
   color: #0f172a;
+}
+
+#auth-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#auth-controls .btn {
+  flex: 1 1 auto;
+  min-width: 140px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .subtitle {
@@ -297,21 +318,92 @@ body {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .app {
-    padding: 14px;
-  }
-
-  #chat-container {
-    max-height: 65vh;
+    padding: 16px;
+    gap: 14px;
   }
 
   .app-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
+  }
+
+  #auth-controls {
+    width: 100%;
+  }
+
+  #auth-controls .btn {
+    flex: 1 1 100%;
+  }
+
+  .profile-bar,
+  .progress-widget,
+  #chat-container,
+  #input-area {
+    padding: 14px 16px;
+  }
+
+  #chat-container {
+    max-height: none;
   }
 
   #input-area {
     flex-direction: column;
+    gap: 12px;
+  }
+
+  .week-controls .btn {
+    flex: 1 1 45%;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 0.95rem;
+  }
+
+  .app {
+    padding: 14px 12px 90px;
+  }
+
+  .app-header h1 {
+    font-size: 1.25rem;
+  }
+
+  #auth-controls .btn,
+  .btn.primary,
+  .btn.secondary,
+  .btn.tertiary {
+    width: 100%;
+  }
+
+  .chips {
+    flex-direction: column;
+  }
+
+  .week-controls {
+    flex-direction: column;
+  }
+
+  .week-controls .btn {
+    width: 100%;
+  }
+
+  #chat-container {
+    padding: 12px;
+  }
+
+  .message {
+    max-width: 100%;
+  }
+
+  #input-area {
+    padding: 12px;
+  }
+
+  #message-input {
+    min-height: 60px;
   }
 }
