@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Entrepreneurship Coach Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Firebase compat SDKs (simplest for static hosting) -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <div>
+            <h1>Entrepreneurship Coach 🤝</h1>
+            <p class="subtitle">
+                A friendly startup coach for middle &amp; high school students.
+            </p>
+        </div>
+        <div id="auth-controls">
+            <button id="login-btn" class="btn primary">Sign in with Google</button>
+            <button id="logout-btn" class="btn secondary hidden">Sign out</button>
+        </div>
+    </header>
+
+    <main id="main-content" class="hidden">
+        <!-- Profile / quick prompts -->
+        <section class="profile-bar">
+            <span id="welcome-text"></span>
+
+            <div class="chips">
+                <button class="chip quick-chip"
+                        data-prompt="Give me a simple business idea I can start with low or no money as a middle/high school student.">
+                    💡 New idea
+                </button>
+                <button class="chip quick-chip"
+                        data-prompt="Help me validate this business idea using simple questions: [describe your idea here].">
+                    ✅ Validate idea
+                </button>
+                <button class="chip quick-chip"
+                        data-prompt="Explain revenue, cost, and profit in very simple terms with an example.">
+                    💰 Money basics
+                </button>
+                <button class="chip quick-chip"
+                        data-prompt="How can I market my idea to friends, family, and people at school?">
+                    📣 Marketing tips
+                </button>
+            </div>
+
+            <!-- Lesson modes -->
+            <div class="lesson-modes">
+                <h3>Lesson Modes</h3>
+                <div class="chip-row">
+                    <button class="chip lesson-chip" data-mode="idea-lab">💡 Idea Lab</button>
+                    <button class="chip lesson-chip" data-mode="business-model">📊 Business Model</button>
+                    <button class="chip lesson-chip" data-mode="marketing">📣 Marketing</button>
+                    <button class="chip lesson-chip" data-mode="money-101">💰 Money 101</button>
+                </div>
+                <p class="lesson-hint">
+                    Pick a mode to focus the coach. You can switch any time.
+                </p>
+            </div>
+        </section>
+
+        <!-- Progress tracker -->
+        <section class="progress-widget">
+            <h3>Your Progress</h3>
+            <ul id="progress-list"></ul>
+            <button id="next-week-btn" class="btn tertiary">
+                ➡️ Move to Next Week
+            </button>
+            <p class="progress-hint">
+                Use weeks as a guide through the 8-week entrepreneurship journey.
+            </p>
+        </section>
+
+        <!-- Chat -->
+        <section id="chat-container">
+            <div id="messages"></div>
+        </section>
+
+        <!-- Input -->
+        <section id="input-area">
+        <textarea id="message-input" rows="2"
+                  placeholder="Ask about ideas, business models, marketing, money basics, or next steps..."></textarea>
+            <button id="send-btn" class="btn primary">Send</button>
+        </section>
+    </main>
+
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p>Coach is thinking...</p>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
