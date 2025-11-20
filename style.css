@@ -161,6 +161,12 @@ body {
   color: #a1a1aa;
 }
 
+.week-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .progress-hint {
   font-size: 0.78rem;
   color: #6b7280;

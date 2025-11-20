@@ -9,6 +9,7 @@ const sendBtn = document.getElementById("send-btn");
 const loadingOverlay = document.getElementById("loading-overlay");
 const progressListEl = document.getElementById("progress-list");
 const nextWeekBtn = document.getElementById("next-week-btn");
+const prevWeekBtn = document.getElementById("prev-week-btn");
 
 const quickChips = document.querySelectorAll(".quick-chip");
 const lessonChips = document.querySelectorAll(".lesson-chip");
@@ -278,6 +279,35 @@ nextWeekBtn.addEventListener("click", async () => {
     "Nice! You've moved to the next week in your entrepreneurship journey. Ask me what you should focus on for Week " +
     userProgress.currentWeek +
     ".";
+  const botMsg = { role: "assistant", content: msg };
+  localMessages.push(botMsg);
+  renderMessages();
+  await saveMessage(currentUser.uid, "assistant", msg);
+});
+
+// Previous week button
+prevWeekBtn.addEventListener("click", async () => {
+  if (!currentUser) return;
+
+  const newWeek = Math.max((userProgress.currentWeek || 1) - 1, 1);
+  if (newWeek === userProgress.currentWeek) {
+    const alreadyMsg =
+      "You're already at Week 1. Ask me “What should I do in Week 1?” to get started.";
+    const botMsg = { role: "assistant", content: alreadyMsg };
+    localMessages.push(botMsg);
+    renderMessages();
+    await saveMessage(currentUser.uid, "assistant", alreadyMsg);
+    return;
+  }
+
+  userProgress.currentWeek = newWeek;
+  await saveUserMeta(currentUser.uid);
+  updateProgressUI();
+
+  const msg =
+    "Got it! You've moved back to Week " +
+    userProgress.currentWeek +
+    ". Ask me what to review or practice for this week.";
   const botMsg = { role: "assistant", content: msg };
   localMessages.push(botMsg);
   renderMessages();
