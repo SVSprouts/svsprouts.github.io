@@ -1,367 +1,379 @@
-// ===== DOM references =====
-const loginBtn = document.getElementById("login-btn");
-const logoutBtn = document.getElementById("logout-btn");
-const mainContent = document.getElementById("main-content");
-const welcomeText = document.getElementById("welcome-text");
-const messagesEl = document.getElementById("messages");
-const inputEl = document.getElementById("message-input");
-const sendBtn = document.getElementById("send-btn");
-const loadingOverlay = document.getElementById("loading-overlay");
-const progressListEl = document.getElementById("progress-list");
-const nextWeekBtn = document.getElementById("next-week-btn");
-const prevWeekBtn = document.getElementById("prev-week-btn");
+// app.js
+(function () {
+  const { firebaseConfig, stripePublishableKey } = window.APP_CONFIG;
 
-const quickChips = document.querySelectorAll(".quick-chip");
-const lessonChips = document.querySelectorAll(".lesson-chip");
+  // Init Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const functions = firebase.functions();
 
-// CHANGE THIS to your deployed Worker URL
-const WORKER_CHAT_URL = "https://your-worker-subdomain.workers.dev/chat";
+  // Init Stripe
+  const stripe = Stripe(stripePublishableKey);
 
-// ===== App state =====
-let currentUser = null;
-let localMessages = []; // { role: "user"|"assistant", content }
-let currentLessonMode = null;
-let userProgress = {
-  ideaLabComplete: false,
-  businessModelComplete: false,
-  marketingComplete: false,
-  money101Complete: false,
-  currentWeek: 1
-};
+  // DOM Elements
+  const footerYear = document.getElementById("footer-year");
+  if (footerYear) footerYear.textContent = new Date().getFullYear();
 
-// Mapping from mode → progress field name
-const MODE_FIELD_MAP = {
-  "idea-lab": "ideaLabComplete",
-  "business-model": "businessModelComplete",
-  "marketing": "marketingComplete",
-  "money-101": "money101Complete"
-};
+  const heroSection = document.getElementById("hero-section");
+  const dashboardSection = document.getElementById("dashboard");
 
-// ===== Helpers =====
-function showLoading(show) {
-  if (show) loadingOverlay.classList.remove("hidden");
-  else loadingOverlay.classList.add("hidden");
-}
+  const navAuth = document.getElementById("nav-auth");
+  const navUser = document.getElementById("nav-user");
+  const navUserEmail = document.getElementById("nav-user-email");
 
-function renderMessages() {
-  messagesEl.innerHTML = "";
-  localMessages.forEach(m => {
-    const row = document.createElement("div");
-    row.className = "message-row";
+  const btnHeroStart = document.getElementById("btn-hero-start");
+  const btnHeroCurriculum = document.getElementById("btn-hero-curriculum");
+  const btnOpenLogin = document.getElementById("btn-open-login");
+  const btnOpenSignup = document.getElementById("btn-open-signup");
+  const btnLogout = document.getElementById("btn-logout");
+  const btnGoDashboard = document.getElementById("btn-go-dashboard");
+  const btnUpgrade = document.getElementById("btn-upgrade");
 
-    const bubble = document.createElement("div");
-    bubble.className = `message ${m.role}`;
-    bubble.textContent = m.content;
+  const authModalBackdrop = document.getElementById("auth-modal-backdrop");
+  const authModalClose = document.getElementById("auth-modal-close");
+  const tabSignup = document.getElementById("tab-signup");
+  const tabLogin = document.getElementById("tab-login");
+  const formSignup = document.getElementById("form-signup");
+  const formLogin = document.getElementById("form-login");
+  const authError = document.getElementById("auth-error");
 
-    row.appendChild(bubble);
-    messagesEl.appendChild(row);
-  });
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-}
+  const monthList = document.getElementById("month-list");
+  const badgesGrid = document.getElementById("badges-grid");
+  const overallProgressFill = document.getElementById("overall-progress-fill");
+  const overallProgressLabel = document.getElementById("overall-progress-label");
 
-function updateProgressUI() {
-  progressListEl.innerHTML = `
-    <li>Idea Lab: ${userProgress.ideaLabComplete ? "✅ Done" : "⬜ Not yet"}</li>
-    <li>Business Model: ${
-      userProgress.businessModelComplete ? "✅ Done" : "⬜ Not yet"
-    }</li>
-    <li>Marketing: ${userProgress.marketingComplete ? "✅ Done" : "⬜ Not yet"}</li>
-    <li>Money 101: ${userProgress.money101Complete ? "✅ Done" : "⬜ Not yet"}</li>
-    <li>Current Week: Week ${userProgress.currentWeek || 1}</li>
-  `;
-}
+  // Month data
+  const MONTHS = [
+    {
+      id: 1,
+      title: "The Spark",
+      desc: "Discover ideas based on your passions.",
+    },
+    {
+      id: 2,
+      title: "Validation",
+      desc: "Talk to potential customers and test your idea.",
+    },
+    {
+      id: 3,
+      title: "Prototyping",
+      desc: "Sketch, build simple demos, or basic websites.",
+    },
+    {
+      id: 4,
+      title: "Brand & Story",
+      desc: "Create a name, logo, and story with AI.",
+    },
+    {
+      id: 5,
+      title: "Money & Marketing",
+      desc: "Learn pricing, budgeting and spreading the word.",
+    },
+    {
+      id: 6,
+      title: "Launch & Pitch",
+      desc: "Showcase what you built to friends and family.",
+    },
+  ];
 
-async function loadMessagesForUser(uid) {
-  const snapshot = await db
-    .collection("users")
-    .doc(uid)
-    .collection("messages")
-    .orderBy("createdAt", "asc")
-    .limit(80)
-    .get();
-
-  localMessages = snapshot.docs.map(doc => doc.data());
-  renderMessages();
-}
-
-async function saveMessage(uid, role, content) {
-  const message = {
-    role,
-    content,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  };
-
-  await db
-    .collection("users")
-    .doc(uid)
-    .collection("messages")
-    .add(message);
-}
-
-async function loadUserMeta(uid) {
-  const doc = await db.collection("users").doc(uid).get();
-  if (doc.exists) {
-    const data = doc.data();
-    currentLessonMode = data.lessonMode || null;
-    const p = data.progress || {};
-    userProgress = {
-      ideaLabComplete: !!p.ideaLabComplete,
-      businessModelComplete: !!p.businessModelComplete,
-      marketingComplete: !!p.marketingComplete,
-      money101Complete: !!p.money101Complete,
-      currentWeek: p.currentWeek || 1
-    };
-  } else {
-    currentLessonMode = null;
-    userProgress = {
-      ideaLabComplete: false,
-      businessModelComplete: false,
-      marketingComplete: false,
-      money101Complete: false,
-      currentWeek: 1
-    };
+  // ---------- UI helpers ----------
+  function showElement(el) {
+    if (!el) return;
+    el.classList.remove("hidden");
   }
-  updateProgressUI();
-}
+  function hideElement(el) {
+    if (!el) return;
+    el.classList.add("hidden");
+  }
 
-async function saveUserMeta(uid) {
-  await db
-    .collection("users")
-    .doc(uid)
-    .set(
+  function openAuthModal(mode = "signup") {
+    if (mode === "signup") {
+      tabSignup.classList.add("active");
+      tabLogin.classList.remove("active");
+      showElement(formSignup);
+      hideElement(formLogin);
+    } else {
+      tabLogin.classList.add("active");
+      tabSignup.classList.remove("active");
+      showElement(formLogin);
+      hideElement(formSignup);
+    }
+    authError.textContent = "";
+    hideElement(authError);
+    showElement(authModalBackdrop);
+  }
+
+  function closeAuthModal() {
+    hideElement(authModalBackdrop);
+  }
+
+  // ---------- Auth modal events ----------
+  if (btnOpenLogin) btnOpenLogin.addEventListener("click", () => openAuthModal("login"));
+  if (btnOpenSignup) btnOpenSignup.addEventListener("click", () => openAuthModal("signup"));
+  if (btnHeroStart) btnHeroStart.addEventListener("click", () => openAuthModal("signup"));
+  if (btnHeroCurriculum)
+    btnHeroCurriculum.addEventListener("click", () => {
+      document.getElementById("curriculum")?.scrollIntoView({ behavior: "smooth" });
+    });
+
+  if (authModalClose) authModalClose.addEventListener("click", closeAuthModal);
+  authModalBackdrop?.addEventListener("click", (e) => {
+    if (e.target === authModalBackdrop) closeAuthModal();
+  });
+
+  if (tabSignup)
+    tabSignup.addEventListener("click", () => {
+      openAuthModal("signup");
+    });
+  if (tabLogin)
+    tabLogin.addEventListener("click", () => {
+      openAuthModal("login");
+    });
+
+  // ---------- Auth forms ----------
+  if (formSignup) {
+    formSignup.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value;
+
+      authError.textContent = "";
+      hideElement(authError);
+
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        await createUserDocIfNeeded(cred.user);
+        closeAuthModal();
+      } catch (err) {
+        console.error(err);
+        authError.textContent = normalizeAuthError(err);
+        showElement(authError);
+      }
+    });
+  }
+
+  if (formLogin) {
+    formLogin.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+
+      authError.textContent = "";
+      hideElement(authError);
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        closeAuthModal();
+      } catch (err) {
+        console.error(err);
+        authError.textContent = normalizeAuthError(err);
+        showElement(authError);
+      }
+    });
+  }
+
+  function normalizeAuthError(err) {
+    if (!err || !err.code) return "Something went wrong. Please try again.";
+    switch (err.code) {
+      case "auth/email-already-in-use":
+        return "That email is already in use. Try signing in instead.";
+      case "auth/invalid-email":
+        return "Please enter a valid email.";
+      case "auth/weak-password":
+        return "Password is too weak. Try at least 6 characters.";
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+        return "Invalid email or password.";
+      default:
+        return "Error: " + err.message;
+    }
+  }
+
+  // ---------- Auth state ----------
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      // Logged in
+      navUserEmail.textContent = user.email || "Family Account";
+      hideElement(navAuth);
+      showElement(navUser);
+
+      // Show dashboard
+      hideElement(heroSection);
+      showElement(dashboardSection);
+
+      await createUserDocIfNeeded(user);
+      await loadUserState(user.uid);
+    } else {
+      // Logged out
+      showElement(heroSection);
+      hideElement(dashboardSection);
+      hideElement(navUser);
+      showElement(navAuth);
+    }
+  });
+
+  // ---------- User doc ----------
+  async function createUserDocIfNeeded(user) {
+    const uid = user.uid;
+    const ref = db.collection("users").doc(uid);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      await ref.set({
+        email: user.email || "",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        subscriptionStatus: "free", // "free" or "paid"
+        months: {
+          1: { progress: 0 },
+          2: { progress: 0 },
+          3: { progress: 0 },
+          4: { progress: 0 },
+          5: { progress: 0 },
+          6: { progress: 0 },
+        },
+      });
+    }
+  }
+
+  async function loadUserState(uid) {
+    const ref = db.collection("users").doc(uid);
+    const snap = await ref.get();
+    if (!snap.exists) return;
+    const data = snap.data();
+
+    renderDashboard(data);
+  }
+
+  function renderDashboard(userData) {
+    // Badges (simple demo)
+    badgesGrid.innerHTML = "";
+    const badges = [
+      "First Login",
+      "Month 1 Explorer",
+      "Idea Machine",
+      "Future Founder",
+    ];
+    badges.forEach((b) => {
+      const span = document.createElement("span");
+      span.className = "badge-pill";
+      span.textContent = b;
+      badgesGrid.appendChild(span);
+    });
+
+    // Month progress
+    monthList.innerHTML = "";
+    const monthsProgress = userData.months || {};
+    let totalProgress = 0;
+    let monthsCount = 0;
+
+    MONTHS.forEach((m) => {
+      const progress = monthsProgress[m.id]?.progress ?? 0;
+      totalProgress += progress;
+      monthsCount += 1;
+
+      const card = document.createElement("div");
+      card.className = "month-card";
+
+      const left = document.createElement("div");
+      const label = document.createElement("div");
+      label.className = "month-label";
+      label.textContent = `Month ${m.id}`;
+      const title = document.createElement("h4");
+      title.textContent = m.title;
+      const desc = document.createElement("p");
+      desc.textContent = m.desc;
+
+      left.appendChild(label);
+      left.appendChild(title);
+      left.appendChild(desc);
+
+      const right = document.createElement("div");
+      right.className = "month-right";
+
+      const pb = document.createElement("div");
+      pb.className = "progress-bar tiny";
+      const fill = document.createElement("div");
+      fill.className = "progress-bar-fill";
+      fill.style.width = `${progress}%`;
+      pb.appendChild(fill);
+
+      const btn = document.createElement("button");
+      btn.className = "btn small secondary";
+      btn.textContent = progress >= 100 ? "Review" : "Continue";
+      btn.addEventListener("click", () => {
+        // Simple demo: bump progress by 25 each click
+        updateMonthProgress(m.id, Math.min(progress + 25, 100));
+      });
+
+      right.appendChild(pb);
+      right.appendChild(btn);
+
+      card.appendChild(left);
+      card.appendChild(right);
+
+      monthList.appendChild(card);
+    });
+
+    const overall = monthsCount ? Math.round(totalProgress / monthsCount) : 0;
+    if (overallProgressFill) overallProgressFill.style.width = `${overall}%`;
+    if (overallProgressLabel) overallProgressLabel.textContent = `${overall}%`;
+  }
+
+  async function updateMonthProgress(monthId, newProgress) {
+    const user = auth.currentUser;
+    if (!user) return;
+    const ref = db.collection("users").doc(user.uid);
+    await ref.set(
       {
-        lessonMode: currentLessonMode,
-        progress: {
-          ideaLabComplete: userProgress.ideaLabComplete,
-          businessModelComplete: userProgress.businessModelComplete,
-          marketingComplete: userProgress.marketingComplete,
-          money101Complete: userProgress.money101Complete,
-          currentWeek: userProgress.currentWeek
-        }
+        months: {
+          [monthId]: { progress: newProgress },
+        },
       },
       { merge: true }
     );
-}
-
-// Send to Worker
-async function sendToWorker(uid, messageText) {
-  // Build short context from last ~10 messages
-  const recent = localMessages.slice(-10).map(m => ({
-    role: m.role === "assistant" ? "assistant" : "user",
-    content: m.content
-  }));
-
-  const payload = {
-    uid,
-    messages: [...recent, { role: "user", content: messageText }],
-    lessonMode: currentLessonMode,
-    currentWeek: userProgress.currentWeek
-  };
-
-  const res = await fetch(WORKER_CHAT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-
-  if (!res.ok) {
-    console.error("Worker error", await res.text());
-    throw new Error("Chat API error");
+    await loadUserState(user.uid);
   }
 
-  const data = await res.json();
-  return data.reply;
-}
-
-// ===== Event handlers =====
-async function handleSend() {
-  const text = inputEl.value.trim();
-  if (!text || !currentUser) return;
-
-  inputEl.value = "";
-  const uid = currentUser.uid;
-
-  const userMsg = { role: "user", content: text };
-  localMessages.push(userMsg);
-  renderMessages();
-  showLoading(true);
-
-  try {
-    await saveMessage(uid, "user", text);
-    const reply = await sendToWorker(uid, text);
-
-    const botMsg = { role: "assistant", content: reply };
-    localMessages.push(botMsg);
-    renderMessages();
-    await saveMessage(uid, "assistant", reply);
-  } catch (err) {
-    console.error(err);
-    const errorMsg = {
-      role: "assistant",
-      content:
-        "Oops, something went wrong talking to your coach. Please try again in a moment."
-    };
-    localMessages.push(errorMsg);
-    renderMessages();
-  } finally {
-    showLoading(false);
-  }
-}
-
-// ===== Auth wiring =====
-loginBtn.addEventListener("click", async () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  await auth.signInWithPopup(provider);
-});
-
-logoutBtn.addEventListener("click", () => auth.signOut());
-
-sendBtn.addEventListener("click", handleSend);
-
-inputEl.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    handleSend();
-  }
-});
-
-// Quick prompt chips
-quickChips.forEach(chip => {
-  chip.addEventListener("click", () => {
-    inputEl.value = chip.dataset.prompt;
-    inputEl.focus();
-  });
-});
-
-// Lesson mode chips
-lessonChips.forEach(chip => {
-  chip.addEventListener("click", async () => {
-    if (!currentUser) return;
-
-    currentLessonMode = chip.dataset.mode;
-    // Mark module as "started/completed" optimistically
-    const field = MODE_FIELD_MAP[currentLessonMode];
-    if (field && !userProgress[field]) {
-      userProgress[field] = true;
-    }
-
-    await saveUserMeta(currentUser.uid);
-    updateProgressUI();
-
-    // Friendly mode-specific introduction
-    const modeMessages = {
-      "idea-lab":
-        "Awesome! You're in 💡 Idea Lab.\nTell me what you're interested in (hobbies, skills, or problems you see in daily life), and I'll help turn those into business ideas.",
-      "business-model":
-        "Great choice! You're in 📊 Business Model mode.\nTell me your idea, and I'll help you think through how it can make money (revenue), what it might cost, and what profit could look like.",
-      "marketing":
-        "Nice! You're in 📣 Marketing mode.\nTell me what you're offering and who it's for, and I'll help you reach people in simple, school-friendly ways.",
-      "money-101":
-        "Cool, you're in 💰 Money 101.\nAsk me anything about pricing, profit, costs, or simple money math with examples."
-    };
-
-    const intro = modeMessages[currentLessonMode] || "Mode updated!";
-    const botMsg = { role: "assistant", content: intro };
-    localMessages.push(botMsg);
-    renderMessages();
-    await saveMessage(currentUser.uid, "assistant", intro);
-  });
-});
-
-// Next week button
-nextWeekBtn.addEventListener("click", async () => {
-  if (!currentUser) return;
-  userProgress.currentWeek = Math.min((userProgress.currentWeek || 1) + 1, 8);
-  await saveUserMeta(currentUser.uid);
-  updateProgressUI();
-
-  const msg =
-    "Nice! You've moved to the next week in your entrepreneurship journey. Ask me what you should focus on for Week " +
-    userProgress.currentWeek +
-    ".";
-  const botMsg = { role: "assistant", content: msg };
-  localMessages.push(botMsg);
-  renderMessages();
-  await saveMessage(currentUser.uid, "assistant", msg);
-});
-
-// Previous week button
-prevWeekBtn.addEventListener("click", async () => {
-  if (!currentUser) return;
-
-  const newWeek = Math.max((userProgress.currentWeek || 1) - 1, 1);
-  if (newWeek === userProgress.currentWeek) {
-    const alreadyMsg =
-      "You're already at Week 1. Ask me “What should I do in Week 1?” to get started.";
-    const botMsg = { role: "assistant", content: alreadyMsg };
-    localMessages.push(botMsg);
-    renderMessages();
-    await saveMessage(currentUser.uid, "assistant", alreadyMsg);
-    return;
+  // ---------- Logout ----------
+  if (btnLogout) {
+    btnLogout.addEventListener("click", async () => {
+      await auth.signOut();
+    });
   }
 
-  userProgress.currentWeek = newWeek;
-  await saveUserMeta(currentUser.uid);
-  updateProgressUI();
-
-  const msg =
-    "Got it! You've moved back to Week " +
-    userProgress.currentWeek +
-    ". Ask me what to review or practice for this week.";
-  const botMsg = { role: "assistant", content: msg };
-  localMessages.push(botMsg);
-  renderMessages();
-  await saveMessage(currentUser.uid, "assistant", msg);
-});
-
-// Auth state listener
-auth.onAuthStateChanged(async user => {
-  currentUser = user;
-  if (user) {
-    loginBtn.classList.add("hidden");
-    logoutBtn.classList.remove("hidden");
-    mainContent.classList.remove("hidden");
-
-    welcomeText.textContent = `Hi ${
-      user.displayName || "there"
-    }! I'm your Entrepreneurship Coach.`;
-
-    await loadUserMeta(user.uid);
-    await loadMessagesForUser(user.uid);
-
-    // First-time welcome
-    if (localMessages.length === 0) {
-      const welcome = {
-        role: "assistant",
-        content:
-          "Hey! I'm your Entrepreneurship Coach 🤝\n\n" +
-          "We can work through an 8-week journey where you:\n" +
-          "• Find problems and turn them into ideas\n" +
-          "• Learn how simple businesses make money\n" +
-          "• Practice basic marketing\n" +
-          "• Understand money, pricing and profit\n\n" +
-          "You can start by picking a Lesson Mode above, or ask me:\n" +
-          "“What should I do in Week 1?”"
-      };
-      localMessages.push(welcome);
-      renderMessages();
-      await saveMessage(user.uid, "assistant", welcome.content);
-    }
-  } else {
-    currentUser = null;
-    localMessages = [];
-    currentLessonMode = null;
-    userProgress = {
-      ideaLabComplete: false,
-      businessModelComplete: false,
-      marketingComplete: false,
-      money101Complete: false,
-      currentWeek: 1
-    };
-    renderMessages();
-    updateProgressUI();
-    mainContent.classList.add("hidden");
-    loginBtn.classList.remove("hidden");
-    logoutBtn.classList.add("hidden");
+  if (btnGoDashboard) {
+    btnGoDashboard.addEventListener("click", () => {
+      dashboardSection?.scrollIntoView({ behavior: "smooth" });
+    });
   }
-});
+
+  // ---------- Stripe Upgrade ----------
+  if (btnUpgrade) {
+    btnUpgrade.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        openAuthModal("signup");
+        return;
+      }
+
+      try {
+        btnUpgrade.disabled = true;
+        btnUpgrade.textContent = "Redirecting to checkout…";
+
+        const createCheckoutSession = functions.httpsCallable("createCheckoutSession");
+        const result = await createCheckoutSession({
+          priceId: "YOUR_STRIPE_PRICE_ID", // TODO: replace with real price ID
+        });
+
+        const sessionId = result.data.id;
+        await stripe.redirectToCheckout({ sessionId });
+      } catch (err) {
+        console.error(err);
+        alert("Could not start checkout. Please try again.");
+      } finally {
+        btnUpgrade.disabled = false;
+        btnUpgrade.textContent = "Unlock Full Access";
+      }
+    });
+  }
+})();

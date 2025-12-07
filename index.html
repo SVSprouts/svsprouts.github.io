@@ -2,107 +2,294 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Entrepreneurship Coach Bot</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Silicon Valley Sprouts – YoungPreneur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="style.css" />
 
-    <!-- Firebase compat SDKs (simplest for static hosting) -->
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase (compat for simplicity) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 
-    <script src="firebase-config.js"></script>
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-<div class="app">
-    <header class="app-header">
-        <div>
-            <h1>Entrepreneurship Coach 🤝</h1>
-            <p class="subtitle">
-                A friendly startup coach for middle &amp; high school students.
+<!-- Top Nav -->
+<header class="nav">
+    <div class="nav-left">
+        <div class="logo">
+            <span class="logo-icon">🌱</span>
+            <span class="logo-text">Silicon Valley Sprouts</span>
+        </div>
+        <nav class="nav-links">
+            <a href="#program">Program</a>
+            <a href="#curriculum">Curriculum</a>
+            <a href="#pricing">Pricing</a>
+        </nav>
+    </div>
+    <div class="nav-right" id="nav-auth">
+        <button class="btn ghost" id="btn-open-login">Sign In</button>
+        <button class="btn primary" id="btn-open-signup">Start Free</button>
+    </div>
+
+    <!-- After login -->
+    <div class="nav-right hidden" id="nav-user">
+        <span id="nav-user-email" class="nav-user-email"></span>
+        <button class="btn ghost" id="btn-go-dashboard">Dashboard</button>
+        <button class="btn secondary" id="btn-logout">Log Out</button>
+    </div>
+</header>
+
+<!-- MAIN CONTENT WRAPPER -->
+<main>
+
+    <!-- HERO (Landing) -->
+    <section class="hero" id="hero-section">
+        <div class="hero-content">
+            <span class="pill">Month 1 is completely free</span>
+            <h1>Build a Business. Build a Bond.</h1>
+            <p class="hero-subtext">
+                A 6-month guided entrepreneurship journey where parents and kids
+                learn, build and launch a real project together — with AI as their
+                creative partner.
             </p>
-        </div>
-        <div id="auth-controls">
-            <button id="login-btn" class="btn primary">Sign in with Google</button>
-            <button id="logout-btn" class="btn secondary hidden">Sign out</button>
-        </div>
-    </header>
-
-    <main id="main-content" class="hidden">
-        <!-- Profile / quick prompts -->
-        <section class="profile-bar">
-            <span id="welcome-text"></span>
-
-            <div class="chips">
-                <button class="chip quick-chip"
-                        data-prompt="Give me a simple business idea I can start with low or no money as a middle/high school student.">
-                    💡 New idea
-                </button>
-                <button class="chip quick-chip"
-                        data-prompt="Help me validate this business idea using simple questions: [describe your idea here].">
-                    ✅ Validate idea
-                </button>
-                <button class="chip quick-chip"
-                        data-prompt="Explain revenue, cost, and profit in very simple terms with an example.">
-                    💰 Money basics
-                </button>
-                <button class="chip quick-chip"
-                        data-prompt="How can I market my idea to friends, family, and people at school?">
-                    📣 Marketing tips
-                </button>
+            <div class="hero-actions">
+                <button class="btn primary" id="btn-hero-start">Start Month 1 Free</button>
+                <button class="btn ghost" id="btn-hero-curriculum">View Curriculum</button>
             </div>
-
-            <!-- Lesson modes -->
-            <div class="lesson-modes">
-                <h3>Lesson Modes</h3>
-                <div class="chip-row">
-                    <button class="chip lesson-chip" data-mode="idea-lab">💡 Idea Lab</button>
-                    <button class="chip lesson-chip" data-mode="business-model">📊 Business Model</button>
-                    <button class="chip lesson-chip" data-mode="marketing">📣 Marketing</button>
-                    <button class="chip lesson-chip" data-mode="money-101">💰 Money 101</button>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-card">
+                <h3>Today’s Mission</h3>
+                <p>Brainstorm 10 ideas based on your family’s interests.</p>
+                <div class="hero-progress">
+                    <span>Family Progress</span>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: 30%;"></div>
+                    </div>
+                    <span class="progress-percent">30%</span>
                 </div>
-                <p class="lesson-hint">
-                    Pick a mode to focus the coach. You can switch any time.
-                </p>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Progress tracker -->
-        <section class="progress-widget">
-            <h3>Your Progress</h3>
-            <ul id="progress-list"></ul>
-            <div class="week-controls">
-                <button id="prev-week-btn" class="btn tertiary">
-                    ⬅️ Move to Previous Week
-                </button>
-                <button id="next-week-btn" class="btn tertiary">
-                    ➡️ Move to Next Week
-                </button>
+    <!-- VALUE PILLARS -->
+    <section class="pillars" id="program">
+        <h2>Why families love this program</h2>
+        <div class="pillar-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon">🤝</div>
+                <h3>Real Connection</h3>
+                <p>Parent–kid bonding through weekly missions and conversations.</p>
             </div>
-            <p class="progress-hint">
-                Use weeks as a guide through the 8-week entrepreneurship journey.
+            <div class="pillar-card">
+                <div class="pillar-icon">💡</div>
+                <h3>Real Skills</h3>
+                <p>Entrepreneurship, money skills, storytelling and leadership.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">🚀</div>
+                <h3>Real Outcomes</h3>
+                <p>Launch a real project in 6 months — with a portfolio to show.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROADMAP / CURRICULUM -->
+    <section class="roadmap" id="curriculum">
+        <h2>The 6-Month Roadmap</h2>
+        <p class="section-subtitle">From idea to launch, step by step.</p>
+
+        <div class="roadmap-grid">
+            <div class="roadmap-card">
+                <div class="roadmap-month">Month 1</div>
+                <h3>The Spark</h3>
+                <p>Find passions, understand problems, and pick a startup idea.</p>
+                <button class="btn small secondary">Start Free</button>
+            </div>
+            <div class="roadmap-card">
+                <div class="roadmap-month">Month 2</div>
+                <h3>Validation</h3>
+                <p>Talk to “customers” and test if your idea really solves a problem.</p>
+            </div>
+            <div class="roadmap-card">
+                <div class="roadmap-month">Month 3</div>
+                <h3>Prototyping</h3>
+                <p>Design simple versions of your product — sketches, sites, demos.</p>
+            </div>
+            <div class="roadmap-card">
+                <div class="roadmap-month">Month 4</div>
+                <h3>Brand & Story</h3>
+                <p>Create your name, logo, and pitch using AI as a helper.</p>
+            </div>
+            <div class="roadmap-card">
+                <div class="roadmap-month">Month 5</div>
+                <h3>Money & Marketing</h3>
+                <p>Learn pricing, basic budgeting, and how to reach your audience.</p>
+            </div>
+            <div class="roadmap-card">
+                <div class="roadmap-month">Month 6</div>
+                <h3>Launch & Pitch</h3>
+                <p>Invite friends, family and mentors to a final pitch showcase.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="pricing" id="pricing">
+        <h2>Invest in skills and memories</h2>
+        <p class="section-subtitle">
+            Full access to the 6-month journey, tools, and future updates.
+        </p>
+
+        <div class="pricing-card">
+            <div class="pricing-chip">Best for families</div>
+            <h3>Full Program Access</h3>
+            <div class="pricing-price">$99 <span>one-time</span></div>
+            <ul class="pricing-list">
+                <li>6 months of guided missions</li>
+                <li>Parent–kid bonding prompts every week</li>
+                <li>AI-powered idea, brand & pitch helpers</li>
+                <li>Downloadable worksheets and templates</li>
+                <li>Lifetime access to new lessons</li>
+            </ul>
+            <button class="btn primary" id="btn-upgrade">Unlock Full Access</button>
+            <p class="pricing-note">Secure payments powered by Stripe.</p>
+        </div>
+    </section>
+
+    <!-- DASHBOARD (hidden until login) -->
+    <section class="dashboard hidden" id="dashboard">
+        <div class="dashboard-header">
+            <h2>Your Family Dashboard</h2>
+            <p id="dashboard-subtitle">
+                Track your journey and pick up where you left off.
             </p>
-        </section>
+        </div>
 
-        <!-- Chat -->
-        <section id="chat-container">
-            <div id="messages"></div>
-        </section>
+        <div class="dashboard-top">
+            <div class="dashboard-progress">
+                <h3>Overall Progress</h3>
+                <div class="progress-bar large">
+                    <div id="overall-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                <span id="overall-progress-label" class="progress-percent">0%</span>
+            </div>
+            <div class="dashboard-badges">
+                <h3>Recent Milestones</h3>
+                <div class="badges-grid" id="badges-grid">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </div>
 
-        <!-- Input -->
-        <section id="input-area">
-        <textarea id="message-input" rows="2"
-                  placeholder="Ask about ideas, business models, marketing, money basics, or next steps..."></textarea>
-            <button id="send-btn" class="btn primary">Send</button>
-        </section>
-    </main>
+        <div class="dashboard-months">
+            <h3>Your Months</h3>
+            <div class="month-list" id="month-list">
+                <!-- Filled by JS; sample template: -->
+                <!--
+                <div class="month-card">
+                  <div>
+                    <div class="month-label">Month 1</div>
+                    <h4>The Spark</h4>
+                    <p>Discover ideas based on your passions.</p>
+                  </div>
+                  <div class="month-right">
+                    <div class="progress-bar tiny">
+                      <div class="progress-bar-fill" style="width: 25%;"></div>
+                    </div>
+                    <button class="btn small secondary">Continue</button>
+                  </div>
+                </div>
+                -->
+            </div>
+        </div>
+    </section>
 
-    <div id="loading-overlay" class="hidden">
-        <div class="spinner"></div>
-        <p>Coach is thinking...</p>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-columns">
+        <div>
+            <h4>Program</h4>
+            <a href="#curriculum">Curriculum</a>
+            <a href="#pricing">Pricing</a>
+        </div>
+        <div>
+            <h4>Company</h4>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <div>
+            <h4>Legal</h4>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+    </div>
+    <p class="footer-copy">© <span id="footer-year"></span> Silicon Valley Sprouts. All rights reserved.</p>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-backdrop hidden" id="auth-modal-backdrop">
+    <div class="modal" id="auth-modal">
+        <button class="modal-close" id="auth-modal-close">✕</button>
+        <div class="modal-tabs">
+            <button class="modal-tab active" id="tab-signup">Sign Up</button>
+            <button class="modal-tab" id="tab-login">Sign In</button>
+        </div>
+
+        <form id="form-signup" class="auth-form">
+            <h3>Create your family account</h3>
+            <label>
+                Parent Email
+                <input type="email" id="signup-email" required />
+            </label>
+            <label>
+                Password
+                <input type="password" id="signup-password" minlength="6" required />
+            </label>
+            <button class="btn primary" type="submit">Create Account</button>
+            <p class="auth-hint">
+                By signing up, you’ll start Month 1 for free.
+            </p>
+        </form>
+
+        <form id="form-login" class="auth-form hidden">
+            <h3>Welcome back</h3>
+            <label>
+                Email
+                <input type="email" id="login-email" required />
+            </label>
+            <label>
+                Password
+                <input type="password" id="login-password" required />
+            </label>
+            <button class="btn primary" type="submit">Sign In</button>
+        </form>
+
+        <p id="auth-error" class="auth-error hidden"></p>
     </div>
 </div>
 
+<!-- CONFIG + APP JS -->
+<script>
+    // TODO: Replace with your own Firebase + Stripe config
+    window.APP_CONFIG = {
+      firebaseConfig: {
+        apiKey: "YOUR_FIREBASE_API_KEY",
+        authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
+        projectId: "YOUR_FIREBASE_PROJECT_ID",
+        storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
+        appId: "YOUR_FIREBASE_APP_ID"
+      },
+      stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
+    };
+</script>
 <script src="app.js"></script>
 </body>
 </html>

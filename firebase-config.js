@@ -1,12 +1,12 @@
 // Get these from Firebase console → Project settings → Web app
 const firebaseConfig = {
-  apiKey: "AIzaSyC8qrJQJRzjkUUpiIL8JGMc7DfKAKdbOLQ",
-  authDomain: "appihippi-93778.firebaseapp.com",
-  projectId: "appihippi-93778",
-  storageBucket: "appihippi-93778.firebasestorage.app",
-  messagingSenderId: "394398291893",
-  appId: "1:394398291893:web:508c0aa0fdd79abc97abfc",
-  measurementId: "G-FJXT4ZGBVL"
+    apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
+    authDomain: "svsprouts-a1350.firebaseapp.com",
+    projectId: "svsprouts-a1350",
+    storageBucket: "svsprouts-a1350.firebasestorage.app",
+    messagingSenderId: "575688818236",
+    appId: "1:575688818236:web:648234b064245b9bf10d39",
+    measurementId: "G-6PTY3QCH6H"
 };
 
 firebase.initializeApp(firebaseConfig);
