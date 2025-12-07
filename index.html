@@ -5,6 +5,9 @@
     <title>Silicon Valley Sprouts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
 
     <!-- Firebase (compat for simplicity) -->
@@ -17,261 +20,308 @@
     <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-<!-- Top Nav -->
-<header class="nav">
-    <div class="nav-left">
-        <div class="logo">
-            <span class="logo-icon">🌱</span>
-            <span class="logo-text">Silicon Valley Sprouts</span>
+    <!-- Top Nav -->
+    <header class="nav">
+        <div class="nav-left">
+            <a class="logo" href="index.html">
+                <span class="logo-icon">🚀</span>
+                <span class="logo-text">Silicon Valley Sprouts</span>
+            </a>
+            <nav class="nav-links">
+                <a href="parent-corner.html">Parent Corner</a>
+                <a href="curriculum.html">Curriculum</a>
+                <a href="pricing.html">Pricing</a>
+            </nav>
         </div>
-        <nav class="nav-links">
-            <a href="#program">Program</a>
-            <a href="#curriculum">Curriculum</a>
-            <a href="#pricing">Pricing</a>
-        </nav>
-    </div>
-    <div class="nav-right" id="nav-auth">
-        <button class="btn ghost" id="btn-open-login">Sign In</button>
-        <button class="btn primary" id="btn-open-signup">Start Free</button>
-    </div>
+        <div class="nav-right" id="nav-auth">
+            <button class="link-btn" id="btn-open-login">My Progress</button>
+            <button class="pill-btn" id="btn-open-signup">Sign Up</button>
+        </div>
 
-    <!-- After login -->
-    <div class="nav-right hidden" id="nav-user">
-        <span id="nav-user-email" class="nav-user-email"></span>
-        <button class="btn ghost" id="btn-go-dashboard">Dashboard</button>
-        <button class="btn secondary" id="btn-logout">Log Out</button>
-    </div>
-</header>
+        <!-- After login -->
+        <div class="nav-right hidden" id="nav-user">
+            <button class="link-btn" id="btn-go-dashboard">My Progress</button>
+            <span id="nav-user-email" class="nav-user-email"></span>
+            <button class="pill-btn outline" id="btn-logout">Sign Out</button>
+        </div>
+    </header>
 
-<!-- MAIN CONTENT WRAPPER -->
-<main>
-
-    <!-- HERO (Landing) -->
-    <section class="hero" id="hero-section">
-        <div class="hero-content">
-            <span class="pill">Month 1 is completely free</span>
-            <h1>Build a Business. Build a Bond.</h1>
-            <p class="hero-subtext">
-                A 6-month guided entrepreneurship journey where parents and kids
-                learn, build and launch a real project together — with AI as their
-                creative partner.
-            </p>
-            <div class="hero-actions">
-                <button class="btn primary" id="btn-hero-start">Start Month 1 Free</button>
-                <button class="btn ghost" id="btn-hero-curriculum">View Curriculum</button>
+    <!-- MAIN CONTENT WRAPPER -->
+    <main>
+        <div class="welcome-banner hidden" id="welcome-banner">
+            <div class="welcome-text">Welcome back, <span id="welcome-name">Family</span>!</div>
+        </div>
+        <!-- SIGNED-IN DASHBOARD -->
+        <section class="progress-section hidden" id="signedin-dashboard">
+            <div class="progress-header">
+                <h2>Track Your Progress</h2>
+                <p class="section-subtitle">Stay motivated with clear milestones and celebrate achievements together.</p>
             </div>
-        </div>
-        <div class="hero-visual">
-            <div class="hero-card">
-                <h3>Today’s Mission</h3>
-                <p>Brainstorm 10 ideas based on your family’s interests.</p>
-                <div class="hero-progress">
-                    <span>Family Progress</span>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: 30%;"></div>
+            <div class="progress-grid">
+                <div class="progress-card">
+                    <div class="progress-card-header">
+                        <h3>Current Learning Path</h3>
+                        <p>Your journey through the program</p>
                     </div>
-                    <span class="progress-percent">30%</span>
+                    <div class="progress-row">
+                        <div class="progress-row-left">
+                            <span class="progress-icon done">✔</span>
+                            <span>Idea Generation</span>
+                        </div>
+                        <span class="progress-percent">100%</span>
+                    </div>
+                    <div class="progress-bar wide"><div class="progress-bar-fill idea" style="width: 100%;"></div></div>
+
+                    <div class="progress-row">
+                        <div class="progress-row-left">
+                            <span class="progress-icon active">▶</span>
+                            <span>Business Planning</span>
+                        </div>
+                        <span class="progress-percent">65%</span>
+                    </div>
+                    <div class="progress-bar wide"><div class="progress-bar-fill biz" style="width: 65%;"></div></div>
+
+                    <div class="progress-row">
+                        <div class="progress-row-left">
+                            <span class="progress-icon idle">⏲</span>
+                            <span>Product Development</span>
+                        </div>
+                        <span class="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar wide"><div class="progress-bar-fill idle" style="width: 0%;"></div></div>
+
+                    <button class="pill-btn filled full-width primary-cta" id="btn-continue-learning">Continue Learning</button>
+                </div>
+
+                <div class="progress-card light">
+                    <div class="progress-card-header">
+                        <h3>Achievements</h3>
+                        <p>Badges you've earned</p>
+                    </div>
+                    <div class="badge-list">
+                        <div class="badge-row">
+                            <span class="badge-icon green">✔</span>
+                            <div>
+                                <div class="badge-title">First Lesson</div>
+                                <div class="badge-sub">Completed your first lesson</div>
+                            </div>
+                        </div>
+                        <div class="badge-row">
+                            <span class="badge-icon green">✔</span>
+                            <div>
+                                <div class="badge-title">Module Master</div>
+                                <div class="badge-sub">Finished a complete module</div>
+                            </div>
+                        </div>
+                        <div class="badge-row">
+                            <span class="badge-icon green">✔</span>
+                            <div>
+                                <div class="badge-title">Idea Champion</div>
+                                <div class="badge-sub">Created 5 business ideas</div>
+                            </div>
+                        </div>
+                        <div class="badge-row muted">
+                            <span class="badge-icon gray">●</span>
+                            <div>
+                                <div class="badge-title">Team Player</div>
+                                <div class="badge-sub">Collaborated with a parent</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- VALUE PILLARS -->
-    <section class="pillars" id="program">
-        <h2>Why families love this program</h2>
-        <div class="pillar-grid">
-            <div class="pillar-card">
-                <div class="pillar-icon">🤝</div>
-                <h3>Real Connection</h3>
-                <p>Parent–kid bonding through weekly missions and conversations.</p>
-            </div>
-            <div class="pillar-card">
-                <div class="pillar-icon">💡</div>
-                <h3>Real Skills</h3>
-                <p>Entrepreneurship, money skills, storytelling and leadership.</p>
-            </div>
-            <div class="pillar-card">
-                <div class="pillar-icon">🚀</div>
-                <h3>Real Outcomes</h3>
-                <p>Launch a real project in 6 months — with a portfolio to show.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ROADMAP / CURRICULUM -->
-    <section class="roadmap" id="curriculum">
-        <h2>The 6-Month Roadmap</h2>
-        <p class="section-subtitle">From idea to launch, step by step.</p>
-
-        <div class="roadmap-grid">
-            <div class="roadmap-card">
-                <div class="roadmap-month">Month 1</div>
-                <h3>The Spark</h3>
-                <p>Find passions, understand problems, and pick a startup idea.</p>
-                <button class="btn small secondary">Start Free</button>
-            </div>
-            <div class="roadmap-card">
-                <div class="roadmap-month">Month 2</div>
-                <h3>Validation</h3>
-                <p>Talk to “customers” and test if your idea really solves a problem.</p>
-            </div>
-            <div class="roadmap-card">
-                <div class="roadmap-month">Month 3</div>
-                <h3>Prototyping</h3>
-                <p>Design simple versions of your product — sketches, sites, demos.</p>
-            </div>
-            <div class="roadmap-card">
-                <div class="roadmap-month">Month 4</div>
-                <h3>Brand & Story</h3>
-                <p>Create your name, logo, and pitch using AI as a helper.</p>
-            </div>
-            <div class="roadmap-card">
-                <div class="roadmap-month">Month 5</div>
-                <h3>Money & Marketing</h3>
-                <p>Learn pricing, basic budgeting, and how to reach your audience.</p>
-            </div>
-            <div class="roadmap-card">
-                <div class="roadmap-month">Month 6</div>
-                <h3>Launch & Pitch</h3>
-                <p>Invite friends, family and mentors to a final pitch showcase.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PRICING -->
-    <section class="pricing" id="pricing">
-        <h2>Invest in skills and memories</h2>
-        <p class="section-subtitle">
-            Full access to the 6-month journey, tools, and future updates.
-        </p>
-
-        <div class="pricing-card">
-            <div class="pricing-chip">Best for families</div>
-            <h3>Full Program Access</h3>
-            <div class="pricing-price">$99 <span>one-time</span></div>
-            <ul class="pricing-list">
-                <li>6 months of guided missions</li>
-                <li>Parent–kid bonding prompts every week</li>
-                <li>AI-powered idea, brand & pitch helpers</li>
-                <li>Downloadable worksheets and templates</li>
-                <li>Lifetime access to new lessons</li>
-            </ul>
-            <button class="btn primary" id="btn-upgrade">Unlock Full Access</button>
-            <p class="pricing-note">Secure payments powered by Stripe.</p>
-        </div>
-    </section>
-
-    <!-- DASHBOARD (hidden until login) -->
-    <section class="dashboard hidden" id="dashboard">
-        <div class="dashboard-header">
-            <h2>Your Family Dashboard</h2>
-            <p id="dashboard-subtitle">
-                Track your journey and pick up where you left off.
-            </p>
-        </div>
-
-        <div class="dashboard-top">
-            <div class="dashboard-progress">
-                <h3>Overall Progress</h3>
-                <div class="progress-bar large">
-                    <div id="overall-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
-                </div>
-                <span id="overall-progress-label" class="progress-percent">0%</span>
-            </div>
-            <div class="dashboard-badges">
-                <h3>Recent Milestones</h3>
-                <div class="badges-grid" id="badges-grid">
-                    <!-- Filled by JS -->
+        </section>
+        <!-- HERO (Landing) -->
+        <section class="hero" id="hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-inner">
+                <div class="hero-copy">
+                    <span class="hero-pill">Month 1 is completely free</span>
+                    <h1>Build a Business.<br />Build a Bond.</h1>
+                    <p class="hero-subtext">
+                        A guided 6-month entrepreneurship program for fathers and their 10–15 year old kids.
+                        Turn ideas into reality together.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="pill-btn filled" id="btn-hero-start">Start Month 1 Free</button>
+                        <button class="pill-btn outline" id="btn-hero-curriculum">View Curriculum</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="dashboard-months">
-            <h3>Your Months</h3>
-            <div class="month-list" id="month-list">
-                <!-- Filled by JS; sample template: -->
-                <!--
-                <div class="month-card">
-                  <div>
-                    <div class="month-label">Month 1</div>
+        <!-- VALUE PILLARS -->
+        <section class="pillars" id="program">
+            <div class="pillar-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">🤝</div>
+                    <h3>Real Connection</h3>
+                    <p>Replace screen time with a shared mission you’ll both remember.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon orange">⚙️</div>
+                    <h3>Real Skills</h3>
+                    <p>Learn finance, marketing, product design, and storytelling together.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon green">📈</div>
+                    <h3>Real Results</h3>
+                    <p>By Month 6, you’ll have launched a real project with your first sale.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROADMAP / CURRICULUM -->
+        <section class="roadmap" id="curriculum">
+            <div class="section-header">
+                <h2>The 6-Month Roadmap</h2>
+                <p class="section-subtitle">From idea to first dollar. Step by step.</p>
+            </div>
+            <div class="roadmap-grid" id="month-list">
+                <div class="month-card highlight">
+                    <div class="month-top">
+                        <span class="month-label">Month 1</span>
+                        <span class="chip chip-free">Free</span>
+                    </div>
                     <h4>The Spark</h4>
-                    <p>Discover ideas based on your passions.</p>
-                  </div>
-                  <div class="month-right">
-                    <div class="progress-bar tiny">
-                      <div class="progress-bar-fill" style="width: 25%;"></div>
-                    </div>
-                    <button class="btn small secondary">Continue</button>
-                  </div>
+                    <p>Discover passions & ideas.</p>
+                    <button class="pill-btn ghost" id="btn-roadmap-start">Start Now</button>
                 </div>
-                -->
+                <div class="month-card locked">
+                    <div class="month-top">
+                        <span class="month-label">Month 2</span>
+                        <span class="chip chip-lock">🔒</span>
+                    </div>
+                    <h4>Validation</h4>
+                    <p>Talk to customers.</p>
+                </div>
+                <div class="month-card locked">
+                    <div class="month-top">
+                        <span class="month-label">Month 3</span>
+                        <span class="chip chip-lock">🔒</span>
+                    </div>
+                    <h4>The Build</h4>
+                    <p>Create your MVP.</p>
+                </div>
+                <div class="month-card locked">
+                    <div class="month-top">
+                        <span class="month-label">Month 4</span>
+                        <span class="chip chip-lock">🔒</span>
+                    </div>
+                    <h4>The Brand</h4>
+                    <p>Storytelling & Logo.</p>
+                </div>
+                <div class="month-card locked">
+                    <div class="month-top">
+                        <span class="month-label">Month 5</span>
+                        <span class="chip chip-lock">🔒</span>
+                    </div>
+                    <h4>Money Matters</h4>
+                    <p>Pricing & Profit.</p>
+                </div>
+                <div class="month-card locked">
+                    <div class="month-top">
+                        <span class="month-label">Month 6</span>
+                        <span class="chip chip-lock">🔒</span>
+                    </div>
+                    <h4>Launch</h4>
+                    <p>Go live & sell.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-columns">
+            <div>
+                <h4>Silicon Valley Sprouts</h4>
+                <p>Empowering fathers and kids to build the future together.</p>
+            </div>
+            <div>
+                <h4>Program</h4>
+                <a href="#curriculum">Curriculum</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#curriculum">Month 1 (Free)</a>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <a href="#">About Us</a>
+                <a href="#">Success Stories</a>
+                <a href="#">Contact</a>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
             </div>
         </div>
-    </section>
-
-</main>
-
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-columns">
-        <div>
-            <h4>Program</h4>
-            <a href="#curriculum">Curriculum</a>
-            <a href="#pricing">Pricing</a>
-        </div>
-        <div>
-            <h4>Company</h4>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-        </div>
-        <div>
-            <h4>Legal</h4>
-            <a href="#">Terms</a>
-            <a href="#">Privacy</a>
-        </div>
-    </div>
-    <p class="footer-copy">© <span id="footer-year"></span> Silicon Valley Sprouts. All rights reserved.</p>
-</footer>
+        <p class="footer-copy">© <span id="footer-year"></span> Silicon Valley Sprouts Inc. All rights reserved.</p>
+    </footer>
 
 <!-- AUTH MODAL -->
 <div class="modal-backdrop hidden" id="auth-modal-backdrop">
     <div class="modal" id="auth-modal">
-        <button class="modal-close" id="auth-modal-close">✕</button>
-        <div class="modal-tabs">
+      <button class="modal-close" id="auth-modal-close">✕</button>
+      <div class="auth-grid">
+        <div class="auth-left">
+          <div class="modal-tabs">
             <button class="modal-tab active" id="tab-signup">Sign Up</button>
             <button class="modal-tab" id="tab-login">Sign In</button>
+          </div>
+
+          <form id="form-signup" class="auth-form">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Start Your Journey</h3>
+            <p class="auth-subtitle">Join the community of fathers building the future.</p>
+            <label>
+              Email address
+              <input type="email" id="signup-email" placeholder="dad@example.com" required />
+            </label>
+            <label>
+              Password
+              <input type="password" id="signup-password" minlength="6" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Create Account</button>
+            <p class="auth-hint">
+              Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
+            </p>
+          </form>
+
+          <form id="form-login" class="auth-form hidden">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Welcome Back</h3>
+            <p class="auth-subtitle">Continue where you left off.</p>
+            <label>
+              Email address
+              <input type="email" id="login-email" placeholder="dad@example.com" required />
+            </label>
+            <label class="password-row">
+              <span>Password</span>
+              <a class="forgot-link" href="#">Forgot password?</a>
+              <input type="password" id="login-password" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Sign In</button>
+            <p class="auth-hint">
+              Don’t have an account? <span class="auth-switch" id="switch-to-signup">Sign up for free</span>
+            </p>
+          </form>
+
+          <p id="auth-error" class="auth-error hidden"></p>
         </div>
 
-        <form id="form-signup" class="auth-form">
-            <h3>Create your family account</h3>
-            <label>
-                Parent Email
-                <input type="email" id="signup-email" required />
-            </label>
-            <label>
-                Password
-                <input type="password" id="signup-password" minlength="6" required />
-            </label>
-            <button class="btn primary" type="submit">Create Account</button>
-            <p class="auth-hint">
-                By signing up, you’ll start Month 1 for free.
-            </p>
-        </form>
-
-        <form id="form-login" class="auth-form hidden">
-            <h3>Welcome back</h3>
-            <label>
-                Email
-                <input type="email" id="login-email" required />
-            </label>
-            <label>
-                Password
-                <input type="password" id="login-password" required />
-            </label>
-            <button class="btn primary" type="submit">Sign In</button>
-        </form>
-
-        <p id="auth-error" class="auth-error hidden"></p>
+        <div class="auth-right">
+          <div class="auth-quote">
+            “My son and I learned more in these 6 months than he did in 2 years of business electives.
+            And we actually built something real.”
+          </div>
+          <div class="auth-quote-author">
+            David M.<br />
+            Silicon Valley Sprouts Alum
+          </div>
+        </div>
+      </div>
     </div>
 </div>
 

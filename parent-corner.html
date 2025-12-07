@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Parent Corner | Silicon Valley Sprouts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase (compat for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+
+  <!-- Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="parent-body">
+  <!-- Top Nav -->
+  <header class="nav">
+    <div class="nav-left">
+      <a class="logo" href="index.html">
+        <span class="logo-icon">🚀</span>
+        <span class="logo-text">Silicon Valley Sprouts</span>
+      </a>
+      <nav class="nav-links">
+        <a href="parent-corner.html">Parent Corner</a>
+        <a href="curriculum.html">Curriculum</a>
+        <a href="pricing.html">Pricing</a>
+      </nav>
+    </div>
+    <div class="nav-right" id="nav-auth">
+      <button class="link-btn" id="btn-open-login">My Progress</button>
+      <button class="pill-btn" id="btn-open-signup">Sign Up</button>
+    </div>
+
+    <!-- After login -->
+    <div class="nav-right hidden" id="nav-user">
+      <button class="link-btn" id="btn-go-dashboard">My Progress</button>
+      <span id="nav-user-email" class="nav-user-email"></span>
+      <button class="pill-btn outline" id="btn-logout">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="parent-shell">
+    <section class="parent-hero">
+      <div class="parent-hero-overlay"></div>
+      <div class="parent-hero-content">
+        <div class="pill small-pill">For Parents Only</div>
+        <h1>The Parent Corner</h1>
+        <p>Wisdom, strategies, and support for guiding your young entrepreneur. Because building a business is hard, but raising a founder is harder.</p>
+      </div>
+    </section>
+
+    <section class="parent-grid">
+      <article class="parent-card">
+        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80" alt="Co-founder not boss" />
+        <div class="parent-card-body">
+          <div class="parent-meta">
+            <span class="tag">Mentorship</span>
+            <span class="meta-detail">5 min read</span>
+          </div>
+          <h3>How to Be a Co-Founder, Not a Boss</h3>
+          <p>Navigating the delicate balance between parenting and partnering. Learn how to step back and let them lead.</p>
+          <div class="parent-card-footer">
+            <span class="author">✍️ David M.</span>
+            <a class="read-link parent-article-link" data-access="free" href="#">Read Article</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="parent-card">
+        <img src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=900&q=80" alt="Profit margin" />
+        <div class="parent-card-body">
+          <div class="parent-meta">
+            <span class="tag orange">Business</span>
+            <span class="meta-detail">4 min read</span>
+          </div>
+          <h3>Explaining “Profit Margin” to a 12-Year-Old</h3>
+          <p>Simple analogies and real-world examples to make financial concepts stick.</p>
+          <div class="parent-card-footer">
+            <span class="author">✍️ Sarah J.</span>
+            <a class="read-link parent-article-link" data-access="free" href="#">Read Article</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="parent-card">
+        <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80" alt="Dad prompt" />
+        <div class="parent-card-body">
+          <div class="parent-meta">
+            <span class="tag">Parenting</span>
+            <span class="meta-detail">3 min read</span>
+          </div>
+          <h3>The Art of the “Dad Prompt”</h3>
+          <p>How to use the weekly prompts to spark deeper conversations about life and values.</p>
+          <div class="parent-card-footer">
+            <span class="author">✍️ Mike T.</span>
+            <a class="read-link parent-article-link" data-access="paid" href="#">Read Article 🔒</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="parent-card">
+        <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c3?auto=format&fit=crop&w=900&q=80" alt="Setback" />
+        <div class="parent-card-body">
+          <div class="parent-meta">
+            <span class="tag">Mentorship</span>
+            <span class="meta-detail">6 min read</span>
+          </div>
+          <h3>Falling Forward: Handling the First Setback</h3>
+          <p>What to do when their first idea doesn’t work out. Turning failure into a learning moment.</p>
+          <div class="parent-card-footer">
+            <span class="author">✍️ FounderDad Team</span>
+            <a class="read-link parent-article-link" data-access="paid" href="#">Read Article 🔒</a>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-backdrop hidden" id="auth-modal-backdrop">
+    <div class="modal" id="auth-modal">
+      <button class="modal-close" id="auth-modal-close">✕</button>
+      <div class="auth-grid">
+        <div class="auth-left">
+          <div class="modal-tabs">
+            <button class="modal-tab active" id="tab-signup">Sign Up</button>
+            <button class="modal-tab" id="tab-login">Sign In</button>
+          </div>
+
+          <form id="form-signup" class="auth-form">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Start Your Journey</h3>
+            <p class="auth-subtitle">Join the community of fathers building the future.</p>
+            <label>
+              Email address
+              <input type="email" id="signup-email" placeholder="dad@example.com" required />
+            </label>
+            <label>
+              Password
+              <input type="password" id="signup-password" minlength="6" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Create Account</button>
+            <p class="auth-hint">
+              Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
+            </p>
+          </form>
+
+          <form id="form-login" class="auth-form hidden">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Welcome Back</h3>
+            <p class="auth-subtitle">Continue where you left off.</p>
+            <label>
+              Email address
+              <input type="email" id="login-email" placeholder="dad@example.com" required />
+            </label>
+            <label class="password-row">
+              <span>Password</span>
+              <a class="forgot-link" href="#">Forgot password?</a>
+              <input type="password" id="login-password" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Sign In</button>
+            <p class="auth-hint">
+              Don’t have an account? <span class="auth-switch" id="switch-to-signup">Sign up for free</span>
+            </p>
+          </form>
+
+          <p id="auth-error" class="auth-error hidden"></p>
+        </div>
+
+        <div class="auth-right">
+          <div class="auth-quote">
+            “My son and I learned more in these 6 months than he did in 2 years of business electives.
+            And we actually built something real.”
+          </div>
+          <div class="auth-quote-author">
+            David M.<br />
+            Silicon Valley Sprouts Alum
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG + APP JS -->
+  <script>
+    window.APP_CONFIG = {
+      firebaseConfig: {
+        apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
+        authDomain: "svsprouts-a1350.firebaseapp.com",
+        projectId: "svsprouts-a1350",
+        storageBucket: "svsprouts-a1350.firebasestorage.app",
+        messagingSenderId: "575688818236",
+        appId: "1:575688818236:web:648234b064245b9bf10d39",
+        measurementId: "G-6PTY3QCH6H"
+      },
+      stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
+    };
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 // app.js
 (function () {
-  const { firebaseConfig, stripePublishableKey } = window.APP_CONFIG;
+  const { firebaseConfig, stripePublishableKey } = window.APP_CONFIG || {};
 
   // Init Firebase
   firebase.initializeApp(firebaseConfig);
@@ -17,18 +17,30 @@
 
   const heroSection = document.getElementById("hero-section");
   const dashboardSection = document.getElementById("dashboard");
+  const welcomeBanner = document.getElementById("welcome-banner");
+  const welcomeName = document.getElementById("welcome-name");
+  const signedInDashboard = document.getElementById("signedin-dashboard");
 
   const navAuth = document.getElementById("nav-auth");
   const navUser = document.getElementById("nav-user");
   const navUserEmail = document.getElementById("nav-user-email");
+  const roadmapSection = document.getElementById("curriculum");
 
   const btnHeroStart = document.getElementById("btn-hero-start");
   const btnHeroCurriculum = document.getElementById("btn-hero-curriculum");
+  const btnRoadmapStart = document.getElementById("btn-roadmap-start");
+  const btnCtaStart = document.getElementById("btn-cta-start");
+  const btnPricingMonthly = document.getElementById("btn-pricing-monthly");
+  const btnPricingOnetime = document.getElementById("btn-pricing-onetime");
+  const parentLinks = document.querySelectorAll('a[href="parent-corner.html"]');
+  const monthLinks = document.querySelectorAll(".month-link");
+  const parentArticleLinks = document.querySelectorAll(".parent-article-link");
   const btnOpenLogin = document.getElementById("btn-open-login");
   const btnOpenSignup = document.getElementById("btn-open-signup");
   const btnLogout = document.getElementById("btn-logout");
   const btnGoDashboard = document.getElementById("btn-go-dashboard");
   const btnUpgrade = document.getElementById("btn-upgrade");
+  const btnContinueLearning = document.getElementById("btn-continue-learning");
 
   const authModalBackdrop = document.getElementById("auth-modal-backdrop");
   const authModalClose = document.getElementById("auth-modal-close");
@@ -37,44 +49,24 @@
   const formSignup = document.getElementById("form-signup");
   const formLogin = document.getElementById("form-login");
   const authError = document.getElementById("auth-error");
+  const switchToLogin = document.getElementById("switch-to-login");
+  const switchToSignup = document.getElementById("switch-to-signup");
 
   const monthList = document.getElementById("month-list");
   const badgesGrid = document.getElementById("badges-grid");
   const overallProgressFill = document.getElementById("overall-progress-fill");
   const overallProgressLabel = document.getElementById("overall-progress-label");
+  let subscriptionStatus = "free";
+  let checkoutInProgress = false;
 
   // Month data
   const MONTHS = [
-    {
-      id: 1,
-      title: "The Spark",
-      desc: "Discover ideas based on your passions.",
-    },
-    {
-      id: 2,
-      title: "Validation",
-      desc: "Talk to potential customers and test your idea.",
-    },
-    {
-      id: 3,
-      title: "Prototyping",
-      desc: "Sketch, build simple demos, or basic websites.",
-    },
-    {
-      id: 4,
-      title: "Brand & Story",
-      desc: "Create a name, logo, and story with AI.",
-    },
-    {
-      id: 5,
-      title: "Money & Marketing",
-      desc: "Learn pricing, budgeting and spreading the word.",
-    },
-    {
-      id: 6,
-      title: "Launch & Pitch",
-      desc: "Showcase what you built to friends and family.",
-    },
+    { id: 1, title: "The Spark", desc: "Discover ideas based on your passions." },
+    { id: 2, title: "Validation", desc: "Talk to potential customers and test your idea." },
+    { id: 3, title: "Prototyping", desc: "Sketch, build simple demos, or basic websites." },
+    { id: 4, title: "Brand & Story", desc: "Create a name, logo, and story with AI." },
+    { id: 5, title: "Money & Marketing", desc: "Learn pricing, budgeting and spreading the word." },
+    { id: 6, title: "Launch & Pitch", desc: "Showcase what you built to friends and family." },
   ];
 
   // ---------- UI helpers ----------
@@ -88,19 +80,22 @@
   }
 
   function openAuthModal(mode = "signup") {
+    if (!authModalBackdrop) return;
     if (mode === "signup") {
-      tabSignup.classList.add("active");
-      tabLogin.classList.remove("active");
+      tabSignup?.classList.add("active");
+      tabLogin?.classList.remove("active");
       showElement(formSignup);
       hideElement(formLogin);
     } else {
-      tabLogin.classList.add("active");
-      tabSignup.classList.remove("active");
+      tabLogin?.classList.add("active");
+      tabSignup?.classList.remove("active");
       showElement(formLogin);
       hideElement(formSignup);
     }
-    authError.textContent = "";
-    hideElement(authError);
+    if (authError) {
+      authError.textContent = "";
+      hideElement(authError);
+    }
     showElement(authModalBackdrop);
   }
 
@@ -112,10 +107,68 @@
   if (btnOpenLogin) btnOpenLogin.addEventListener("click", () => openAuthModal("login"));
   if (btnOpenSignup) btnOpenSignup.addEventListener("click", () => openAuthModal("signup"));
   if (btnHeroStart) btnHeroStart.addEventListener("click", () => openAuthModal("signup"));
+  if (btnRoadmapStart) btnRoadmapStart.addEventListener("click", () => openAuthModal("signup"));
+  if (btnCtaStart) btnCtaStart.addEventListener("click", () => openAuthModal("signup"));
+  if (btnPricingMonthly) btnPricingMonthly.addEventListener("click", () => openAuthModal("signup"));
+  if (btnPricingOnetime) btnPricingOnetime.addEventListener("click", () => openAuthModal("signup"));
+
   if (btnHeroCurriculum)
     btnHeroCurriculum.addEventListener("click", () => {
       document.getElementById("curriculum")?.scrollIntoView({ behavior: "smooth" });
     });
+  if (btnContinueLearning) {
+    btnContinueLearning.addEventListener("click", () => {
+      window.location.href = "curriculum.html";
+    });
+  }
+  if (parentLinks.length) {
+    parentLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        // allow navigation; no modal hook
+        return;
+      });
+    });
+  }
+  function attachMonthLinkGuards() {
+    const links = document.querySelectorAll(".month-link");
+    links.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const month = Number(link.getAttribute("data-month") || "1");
+        const user = auth.currentUser;
+        if (!user) {
+          e.preventDefault();
+          openAuthModal("signup");
+          return;
+        }
+        if (month > 1 && subscriptionStatus !== "paid") {
+          e.preventDefault();
+          startCheckout();
+        }
+      });
+    });
+  }
+
+  attachMonthLinkGuards();
+
+  function attachParentArticleGuards() {
+    const links = document.querySelectorAll(".parent-article-link");
+    links.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const access = link.getAttribute("data-access") || "paid";
+        const user = auth.currentUser;
+        if (!user) {
+          e.preventDefault();
+          openAuthModal("signup");
+          return;
+        }
+        if (access === "paid" && subscriptionStatus !== "paid") {
+          e.preventDefault();
+          startCheckout();
+        }
+      });
+    });
+  }
+  attachParentArticleGuards();
 
   if (authModalClose) authModalClose.addEventListener("click", closeAuthModal);
   authModalBackdrop?.addEventListener("click", (e) => {
@@ -130,6 +183,36 @@
     tabLogin.addEventListener("click", () => {
       openAuthModal("login");
     });
+  if (switchToLogin)
+    switchToLogin.addEventListener("click", () => {
+      openAuthModal("login");
+    });
+  if (switchToSignup)
+    switchToSignup.addEventListener("click", () => {
+      openAuthModal("signup");
+    });
+
+  async function startCheckout() {
+    if (checkoutInProgress) return;
+    if (!functions || !stripe) {
+      window.location.href = "pricing.html";
+      return;
+    }
+    try {
+      checkoutInProgress = true;
+      const createCheckoutSession = functions.httpsCallable("createCheckoutSession");
+      const result = await createCheckoutSession({
+        priceId: "YOUR_STRIPE_PRICE_ID", // TODO: replace with real price ID
+      });
+      const sessionId = result.data.id;
+      await stripe.redirectToCheckout({ sessionId });
+    } catch (err) {
+      console.error(err);
+      window.location.href = "pricing.html";
+    } finally {
+      checkoutInProgress = false;
+    }
+  }
 
   // ---------- Auth forms ----------
   if (formSignup) {
@@ -138,8 +221,10 @@
       const email = document.getElementById("signup-email").value.trim();
       const password = document.getElementById("signup-password").value;
 
-      authError.textContent = "";
-      hideElement(authError);
+      if (authError) {
+        authError.textContent = "";
+        hideElement(authError);
+      }
 
       try {
         const cred = await auth.createUserWithEmailAndPassword(email, password);
@@ -147,8 +232,10 @@
         closeAuthModal();
       } catch (err) {
         console.error(err);
-        authError.textContent = normalizeAuthError(err);
-        showElement(authError);
+        if (authError) {
+          authError.textContent = normalizeAuthError(err);
+          showElement(authError);
+        }
       }
     });
   }
@@ -159,16 +246,20 @@
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
 
-      authError.textContent = "";
-      hideElement(authError);
+      if (authError) {
+        authError.textContent = "";
+        hideElement(authError);
+      }
 
       try {
         await auth.signInWithEmailAndPassword(email, password);
         closeAuthModal();
       } catch (err) {
         console.error(err);
-        authError.textContent = normalizeAuthError(err);
-        showElement(authError);
+        if (authError) {
+          authError.textContent = normalizeAuthError(err);
+          showElement(authError);
+        }
       }
     });
   }
@@ -190,24 +281,40 @@
     }
   }
 
+  function setWelcome(user) {
+    if (!welcomeBanner) return;
+    const name = user?.displayName || user?.email || "there";
+    if (welcomeName) welcomeName.textContent = name;
+    showElement(welcomeBanner);
+  }
+
+  function clearWelcome() {
+    hideElement(welcomeBanner);
+    if (welcomeName) welcomeName.textContent = "";
+  }
+
   // ---------- Auth state ----------
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       // Logged in
-      navUserEmail.textContent = user.email || "Family Account";
+      if (navUserEmail) navUserEmail.textContent = user.email || "Family Account";
       hideElement(navAuth);
       showElement(navUser);
 
-      // Show dashboard
+      // Show dashboard if present
       hideElement(heroSection);
-      showElement(dashboardSection);
+      hideElement(roadmapSection);
+      showElement(signedInDashboard);
+      setWelcome(user);
 
       await createUserDocIfNeeded(user);
       await loadUserState(user.uid);
     } else {
       // Logged out
+      clearWelcome();
       showElement(heroSection);
-      hideElement(dashboardSection);
+      showElement(roadmapSection);
+      hideElement(signedInDashboard);
       hideElement(navUser);
       showElement(navAuth);
     }
@@ -240,19 +347,21 @@
     const snap = await ref.get();
     if (!snap.exists) return;
     const data = snap.data();
+    subscriptionStatus = data.subscriptionStatus || "free";
 
     renderDashboard(data);
+    attachMonthLinkGuards();
+    attachParentArticleGuards();
   }
 
   function renderDashboard(userData) {
+    if (!badgesGrid || !monthList || !overallProgressFill || !overallProgressLabel) {
+      return;
+    }
+
     // Badges (simple demo)
     badgesGrid.innerHTML = "";
-    const badges = [
-      "First Login",
-      "Month 1 Explorer",
-      "Idea Machine",
-      "Future Founder",
-    ];
+    const badges = ["First Login", "Month 1 Explorer", "Idea Machine", "Future Founder"];
     badges.forEach((b) => {
       const span = document.createElement("span");
       span.className = "badge-pill";
@@ -297,13 +406,16 @@
       fill.style.width = `${progress}%`;
       pb.appendChild(fill);
 
-      const btn = document.createElement("button");
-      btn.className = "btn small secondary";
-      btn.textContent = progress >= 100 ? "Review" : "Continue";
-      btn.addEventListener("click", () => {
-        // Simple demo: bump progress by 25 each click
-        updateMonthProgress(m.id, Math.min(progress + 25, 100));
-      });
+      const btn = document.createElement("a");
+      btn.className = "pill-btn outline";
+      btn.href = "course-month1.html";
+      if (m.id > 1 && subscriptionStatus !== "paid") {
+        btn.textContent = "Upgrade";
+        btn.href = "pricing.html";
+      } else {
+        btn.textContent = progress >= 100 ? "Review" : "Continue";
+        btn.href = "course-month1.html";
+      }
 
       right.appendChild(pb);
       right.appendChild(btn);
@@ -360,13 +472,7 @@
         btnUpgrade.disabled = true;
         btnUpgrade.textContent = "Redirecting to checkout…";
 
-        const createCheckoutSession = functions.httpsCallable("createCheckoutSession");
-        const result = await createCheckoutSession({
-          priceId: "YOUR_STRIPE_PRICE_ID", // TODO: replace with real price ID
-        });
-
-        const sessionId = result.data.id;
-        await stripe.redirectToCheckout({ sessionId });
+        await startCheckout();
       } catch (err) {
         console.error(err);
         alert("Could not start checkout. Please try again.");

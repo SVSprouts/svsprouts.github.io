@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Month 1 | The Spark</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase (compat for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+
+  <!-- Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="course-body">
+  <!-- Top Nav -->
+  <header class="nav">
+    <div class="nav-left">
+      <a class="logo" href="index.html">
+        <span class="logo-icon">🚀</span>
+        <span class="logo-text">Silicon Valley Sprouts</span>
+      </a>
+      <nav class="nav-links">
+        <a href="parent-corner.html">Parent Corner</a>
+        <a href="curriculum.html">Curriculum</a>
+        <a href="pricing.html">Pricing</a>
+      </nav>
+    </div>
+    <div class="nav-right" id="nav-auth">
+      <button class="link-btn" id="btn-open-login">My Progress</button>
+      <button class="pill-btn" id="btn-open-signup">Sign Up</button>
+    </div>
+
+    <!-- After login -->
+    <div class="nav-right hidden" id="nav-user">
+      <button class="link-btn" id="btn-go-dashboard">My Progress</button>
+      <span id="nav-user-email" class="nav-user-email"></span>
+      <button class="pill-btn outline" id="btn-logout">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="course-shell">
+    <a class="back-link" href="curriculum.html">← Back to Dashboard</a>
+
+    <div class="course-header">
+      <div>
+        <p class="eyebrow">Month 1</p>
+        <h1>The Spark</h1>
+        <p class="muted">Discovering passions and identifying problems worth solving.</p>
+      </div>
+    </div>
+
+    <div class="course-layout">
+      <div class="course-left">
+        <details open class="week-card">
+          <summary>
+            <div class="week-title">
+              <span class="week-icon">✅</span>
+              <div>
+                <div class="week-name">Week 1: Uncovering Interests</div>
+                <div class="week-sub">What do we love? What are we good at?</div>
+              </div>
+            </div>
+          </summary>
+          <div class="week-body">
+            <div class="lesson">
+              <div class="lesson-title">The Passion Audit</div>
+              <div class="lesson-sub">Listing out hobbies, skills, and curiosities.</div>
+            </div>
+            <div class="lesson">
+              <div class="lesson-meta">30m</div>
+              <div class="lesson-title">Venn Diagram of Fun</div>
+            </div>
+            <div class="lesson">
+              <div class="lesson-meta">15m</div>
+              <div class="lesson-title">Top 3 List</div>
+            </div>
+            <div class="prompt">
+              <div class="prompt-label">Dad Prompt</div>
+              <p>“Dad, share a hobby you loved at their age but stopped doing. Why did you stop?”</p>
+            </div>
+            <button class="pill-btn outline full-width">Mark as Incomplete</button>
+          </div>
+        </details>
+
+        <details class="week-card">
+          <summary>
+            <div class="week-title">
+              <span class="week-icon">⭕️</span>
+              <div>
+                <div class="week-name">Week 2: Spotting Problems</div>
+                <div class="week-sub">Looking at the world through an entrepreneur’s lens.</div>
+              </div>
+            </div>
+          </summary>
+        </details>
+
+        <details class="week-card">
+          <summary>
+            <div class="week-title">
+              <span class="week-icon">⭕️</span>
+              <div>
+                <div class="week-name">Week 3: The Idea Generator</div>
+                <div class="week-sub">Brainstorming solutions without judgment.</div>
+              </div>
+            </div>
+          </summary>
+        </details>
+
+        <details class="week-card">
+          <summary>
+            <div class="week-title">
+              <span class="week-icon">⭕️</span>
+              <div>
+                <div class="week-name">Week 4: Selection Day</div>
+                <div class="week-sub">Picking the one idea to pursue for the next 5 months.</div>
+              </div>
+            </div>
+          </summary>
+        </details>
+      </div>
+
+      <div class="course-right">
+        <div class="progress-card">
+          <div class="progress-card-title">Month Progress</div>
+          <p class="muted">1 of 4 weeks completed</p>
+          <div class="progress-bar">
+            <div class="progress-bar-fill" style="width: 25%;"></div>
+          </div>
+        </div>
+
+        <div class="upgrade-card">
+          <div class="upgrade-title">Unlock the Full Journey</div>
+          <p>Get access to all 6 months, including “The Launch” and “Money Matters”.</p>
+          <a class="pill-btn filled full-width" href="pricing.html">Upgrade Now</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-backdrop hidden" id="auth-modal-backdrop">
+    <div class="modal" id="auth-modal">
+      <button class="modal-close" id="auth-modal-close">✕</button>
+      <div class="auth-grid">
+        <div class="auth-left">
+          <div class="modal-tabs">
+            <button class="modal-tab active" id="tab-signup">Sign Up</button>
+            <button class="modal-tab" id="tab-login">Sign In</button>
+          </div>
+
+          <form id="form-signup" class="auth-form">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Start Your Journey</h3>
+            <p class="auth-subtitle">Join the community of fathers building the future.</p>
+            <label>
+              Email address
+              <input type="email" id="signup-email" placeholder="dad@example.com" required />
+            </label>
+            <label>
+              Password
+              <input type="password" id="signup-password" minlength="6" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Create Account</button>
+            <p class="auth-hint">
+              Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
+            </p>
+          </form>
+
+          <form id="form-login" class="auth-form hidden">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Welcome Back</h3>
+            <p class="auth-subtitle">Continue where you left off.</p>
+            <label>
+              Email address
+              <input type="email" id="login-email" placeholder="dad@example.com" required />
+            </label>
+            <label class="password-row">
+              <span>Password</span>
+              <a class="forgot-link" href="#">Forgot password?</a>
+              <input type="password" id="login-password" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Sign In</button>
+            <p class="auth-hint">
+              Don’t have an account? <span class="auth-switch" id="switch-to-signup">Sign up for free</span>
+            </p>
+          </form>
+
+          <p id="auth-error" class="auth-error hidden"></p>
+        </div>
+
+        <div class="auth-right">
+          <div class="auth-quote">
+            “My son and I learned more in these 6 months than he did in 2 years of business electives.
+            And we actually built something real.”
+          </div>
+          <div class="auth-quote-author">
+            David M.<br />
+            Silicon Valley Sprouts Alum
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG + APP JS -->
+  <script>
+    window.APP_CONFIG = {
+      firebaseConfig: {
+        apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
+        authDomain: "svsprouts-a1350.firebaseapp.com",
+        projectId: "svsprouts-a1350",
+        storageBucket: "svsprouts-a1350.firebasestorage.app",
+        messagingSenderId: "575688818236",
+        appId: "1:575688818236:web:648234b064245b9bf10d39",
+        measurementId: "G-6PTY3QCH6H"
+      },
+      stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
+    };
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

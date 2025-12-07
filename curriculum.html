@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Silicon Valley Sprouts | Curriculum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase (compat for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+
+  <!-- Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="curriculum-body">
+  <!-- Top Nav -->
+  <header class="nav">
+    <div class="nav-left">
+      <a class="logo" href="index.html">
+        <span class="logo-icon">🚀</span>
+        <span class="logo-text">Silicon Valley Sprouts</span>
+      </a>
+      <nav class="nav-links">
+        <a href="parent-corner.html">Parent Corner</a>
+        <a href="curriculum.html">Curriculum</a>
+        <a href="pricing.html">Pricing</a>
+      </nav>
+    </div>
+    <div class="nav-right" id="nav-auth">
+      <button class="link-btn" id="btn-open-login">My Progress</button>
+      <button class="pill-btn" id="btn-open-signup">Sign Up</button>
+    </div>
+
+    <!-- After login -->
+    <div class="nav-right hidden" id="nav-user">
+      <button class="link-btn" id="btn-go-dashboard">My Progress</button>
+      <span id="nav-user-email" class="nav-user-email"></span>
+      <button class="pill-btn outline" id="btn-logout">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="curriculum-shell">
+    <section class="curriculum-header">
+      <div class="curriculum-badges">
+        <div class="level-chip">
+          <span class="level-num">3</span>
+          <div class="xp-bar">
+            <div class="xp-fill" style="width: 65%;"></div>
+          </div>
+          <span class="xp-text">1100 XP</span>
+          <span class="xp-total">/ 1500</span>
+        </div>
+        <div class="streak-chip">
+          <span class="streak-icon">🔥</span>
+          <div>
+            <div class="streak-label">0 Day</div>
+            <div class="streak-sub">Streak</div>
+          </div>
+        </div>
+        <div class="title-chip">🏆 Hustler</div>
+      </div>
+
+      <div class="curriculum-title">
+        <div>
+          <p class="eyebrow">Your Dashboard</p>
+          <h1>Track your progress and access your curriculum.</h1>
+        </div>
+        <div></div>
+      </div>
+
+      <div class="achievements">
+        <div class="achievement-card">
+          <div class="ach-icon">🏁</div>
+          <div>
+            <div class="ach-title">First Step</div>
+            <div class="ach-sub">Completed your first week</div>
+          </div>
+        </div>
+        <div class="achievement-card">
+          <div class="ach-icon">💡</div>
+          <div>
+            <div class="ach-title">Idea Machine</div>
+            <div class="ach-sub">Completed Month 1</div>
+          </div>
+        </div>
+        <div class="achievement-card">
+          <div class="ach-icon">💰</div>
+          <div>
+            <div class="ach-title">Money Maker</div>
+            <div class="ach-sub">Unlocked the full course</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="curriculum-list">
+      <div class="month-row">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Month 1</span>
+            <span class="chip-free">Free</span>
+          </div>
+          <h3>The Spark</h3>
+          <p>Discovering passions and identifying problems worth solving.</p>
+        </div>
+        <div class="month-actions">
+          <div class="progress-line">
+            <span>Progress</span>
+            <div class="progress-bar tiny">
+              <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <span class="progress-percent">100%</span>
+          </div>
+          <a class="pill-btn outline dark month-link" data-month="1" href="course-month1.html">Review Month</a>
+        </div>
+      </div>
+
+      <div class="month-row">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Month 2</span>
+          </div>
+          <h3>Validation</h3>
+          <p>Talking to customers and testing assumptions.</p>
+        </div>
+        <div class="month-actions">
+          <div class="progress-line">
+            <span>Progress</span>
+            <div class="progress-bar tiny">
+              <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <span class="progress-percent">100%</span>
+          </div>
+          <button class="pill-btn outline dark" data-auth-btn>Review Month</button>
+        </div>
+      </div>
+
+      <div class="month-row">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Month 3</span>
+          </div>
+          <h3>The Build</h3>
+          <p>Creating the first version of the product or service.</p>
+        </div>
+        <div class="month-actions">
+          <div class="progress-line">
+            <span>Progress</span>
+            <div class="progress-bar tiny">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <span class="progress-percent">0%</span>
+          </div>
+          <a class="pill-btn filled dark month-link" data-month="2" href="course-month1.html">Start Month</a>
+        </div>
+      </div>
+
+      <div class="month-row">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Month 4</span>
+          </div>
+          <h3>The Brand</h3>
+          <p>Naming, logo, and telling the story.</p>
+        </div>
+        <div class="month-actions">
+          <div class="progress-line">
+            <span>Progress</span>
+            <div class="progress-bar tiny">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <span class="progress-percent">0%</span>
+          </div>
+          <a class="pill-btn filled dark month-link" data-month="3" href="course-month1.html">Start Month</a>
+        </div>
+      </div>
+
+      <div class="month-row">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Month 5</span>
+          </div>
+          <h3>Money Matters</h3>
+          <p>Pricing, costs, and profit.</p>
+        </div>
+        <div class="month-actions">
+          <div class="progress-line">
+            <span>Progress</span>
+            <div class="progress-bar tiny">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <span class="progress-percent">0%</span>
+          </div>
+          <a class="pill-btn filled dark month-link" data-month="4" href="course-month1.html">Start Month</a>
+        </div>
+      </div>
+
+      <div class="month-row">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Month 6</span>
+          </div>
+          <h3>Launch</h3>
+          <p>Go live and sell.</p>
+        </div>
+        <div class="month-actions">
+          <div class="progress-line">
+            <span>Progress</span>
+            <div class="progress-bar tiny">
+              <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <span class="progress-percent">100%</span>
+          </div>
+          <a class="pill-btn outline dark month-link" data-month="6" href="course-month1.html">Review Month</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-backdrop hidden" id="auth-modal-backdrop">
+    <div class="modal" id="auth-modal">
+      <button class="modal-close" id="auth-modal-close">✕</button>
+      <div class="auth-grid">
+        <div class="auth-left">
+          <div class="modal-tabs">
+            <button class="modal-tab active" id="tab-signup">Sign Up</button>
+            <button class="modal-tab" id="tab-login">Sign In</button>
+          </div>
+
+          <form id="form-signup" class="auth-form">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Start Your Journey</h3>
+            <p class="auth-subtitle">Join the community of fathers building the future.</p>
+            <label>
+              Email address
+              <input type="email" id="signup-email" placeholder="dad@example.com" required />
+            </label>
+            <label>
+              Password
+              <input type="password" id="signup-password" minlength="6" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Create Account</button>
+            <p class="auth-hint">
+              Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
+            </p>
+          </form>
+
+          <form id="form-login" class="auth-form hidden">
+            <div class="auth-hero-icon">🚀</div>
+            <h3 class="auth-title">Welcome Back</h3>
+            <p class="auth-subtitle">Continue where you left off.</p>
+            <label>
+              Email address
+              <input type="email" id="login-email" placeholder="dad@example.com" required />
+            </label>
+            <label class="password-row">
+              <span>Password</span>
+              <a class="forgot-link" href="#">Forgot password?</a>
+              <input type="password" id="login-password" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Sign In</button>
+            <p class="auth-hint">
+              Don’t have an account? <span class="auth-switch" id="switch-to-signup">Sign up for free</span>
+            </p>
+          </form>
+
+          <p id="auth-error" class="auth-error hidden"></p>
+        </div>
+
+        <div class="auth-right">
+          <div class="auth-quote">
+            “My son and I learned more in these 6 months than he did in 2 years of business electives.
+            And we actually built something real.”
+          </div>
+          <div class="auth-quote-author">
+            David M.<br />
+            Silicon Valley Sprouts Alum
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG + APP JS -->
+  <script>
+    window.APP_CONFIG = {
+      firebaseConfig: {
+        apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
+        authDomain: "svsprouts-a1350.firebaseapp.com",
+        projectId: "svsprouts-a1350",
+        storageBucket: "svsprouts-a1350.firebasestorage.app",
+        messagingSenderId: "575688818236",
+        appId: "1:575688818236:web:648234b064245b9bf10d39",
+        measurementId: "G-6PTY3QCH6H"
+      },
+      stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
+    };
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
