@@ -1,0 +1,43 @@
+/* layout.css: page structure */
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.course-main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 1.2fr);
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 24px;
+}
+
+.course-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.course-footer {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .course-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .course-footer {
+    justify-content: stretch;
+  }
+
+  .course-footer .primary-button {
+    width: 100%;
+  }
+}

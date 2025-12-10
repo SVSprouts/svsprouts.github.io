@@ -149,6 +149,16 @@
   }
 
   attachMonthLinkGuards();
+  updateMonthLinkTargets(false);
+
+  function updateMonthLinkTargets(isSignedIn) {
+    const links = document.querySelectorAll(".month-link");
+    links.forEach((link) => {
+      const month = link.getAttribute("data-month") || "1";
+      const target = isSignedIn ? `course-month${month}.html` : "#";
+      link.setAttribute("href", target);
+    });
+  }
 
   function attachParentArticleGuards() {
     const links = document.querySelectorAll(".parent-article-link");
@@ -300,6 +310,7 @@
       if (navUserEmail) navUserEmail.textContent = user.email || "Family Account";
       hideElement(navAuth);
       showElement(navUser);
+      updateMonthLinkTargets(true);
 
       // Show dashboard if present
       hideElement(heroSection);
@@ -317,6 +328,7 @@
       hideElement(signedInDashboard);
       hideElement(navUser);
       showElement(navAuth);
+      updateMonthLinkTargets(false);
     }
   });
 

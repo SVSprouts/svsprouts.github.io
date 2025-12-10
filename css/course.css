@@ -1,0 +1,150 @@
+/* course.css: course page specific styling */
+
+.course-header {
+  margin-bottom: 8px;
+}
+
+.back-link {
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.back-link:hover {
+  color: #111827;
+}
+
+.course-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 16px;
+}
+
+.course-month-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #6b7280;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.course-title {
+  font-size: 1.6rem;
+  margin: 0 0 4px;
+}
+
+.course-tagline {
+  margin: 0;
+  color: #4b5563;
+}
+
+.course-header-badge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  background: #f97316;
+  color: #fff7ed;
+}
+
+/* Progress */
+
+.course-progress {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.course-progress-track {
+  flex: 1;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.course-progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f97316, #14b8a6);
+  transition: width 0.25s ease-out;
+}
+
+.course-progress-label {
+  min-width: 72px;
+  text-align: right;
+}
+
+/* Content */
+
+.course-content h1,
+.course-content h2,
+.course-content h3 {
+  margin-top: 1.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.course-content h1 {
+  font-size: 1.4rem;
+}
+
+.course-content h2 {
+  font-size: 1.2rem;
+}
+
+.course-content h3 {
+  font-size: 1rem;
+  color: #111827;
+}
+
+.course-content p {
+  margin: 0.4rem 0;
+  color: #374151;
+}
+
+.course-content ul {
+  padding-left: 1.2rem;
+}
+
+.course-content li {
+  margin: 0.2rem 0;
+}
+
+/* Sidebar */
+
+.sidebar-heading {
+  font-size: 0.95rem;
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+
+.course-toc {
+  font-size: 0.85rem;
+}
+
+.course-toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.course-toc li {
+  margin: 0.25rem 0;
+}
+
+.course-toc a {
+  color: #374151;
+}
+
+.course-toc a:hover {
+  color: #111827;
+}
