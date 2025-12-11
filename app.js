@@ -307,15 +307,24 @@
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       // Logged in
+
+      // If on the index/landing page, redirect to curriculum
+      const path = window.location.pathname;
+      const page = path.split("/").pop();
+      if (!page || page === "index.html") {
+        window.location.href = "curriculum.html";
+        return;
+      }
+
       if (navUserEmail) navUserEmail.textContent = user.email || "Family Account";
       hideElement(navAuth);
       showElement(navUser);
       updateMonthLinkTargets(true);
 
-      // Show dashboard if present
+      // Show dashboard if present (now handled by redirection, but for other pages)
       hideElement(heroSection);
       hideElement(roadmapSection);
-      showElement(signedInDashboard);
+      // showElement(signedInDashboard); // Section removed from HTML
       setWelcome(user);
 
       await createUserDocIfNeeded(user);
@@ -325,7 +334,7 @@
       clearWelcome();
       showElement(heroSection);
       showElement(roadmapSection);
-      hideElement(signedInDashboard);
+      // hideElement(signedInDashboard); // Section removed from HTML
       hideElement(navUser);
       showElement(navAuth);
       updateMonthLinkTargets(false);

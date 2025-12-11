@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <title>Silicon Valley Sprouts</title>
@@ -7,7 +8,9 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
 
     <!-- Firebase (compat for simplicity) -->
@@ -19,6 +22,7 @@
     <!-- Stripe -->
     <script src="https://js.stripe.com/v3/"></script>
 </head>
+
 <body>
     <!-- Top Nav -->
     <header class="nav">
@@ -51,86 +55,7 @@
         <div class="welcome-banner hidden" id="welcome-banner">
             <div class="welcome-text">Welcome back, <span id="welcome-name">Family</span>!</div>
         </div>
-        <!-- SIGNED-IN DASHBOARD -->
-        <section class="progress-section hidden" id="signedin-dashboard">
-            <div class="progress-header">
-                <h2>Track Your Progress</h2>
-                <p class="section-subtitle">Stay motivated with clear milestones and celebrate achievements together.</p>
-            </div>
-            <div class="progress-grid">
-                <div class="progress-card">
-                    <div class="progress-card-header">
-                        <h3>Current Learning Path</h3>
-                        <p>Your journey through the program</p>
-                    </div>
-                    <div class="progress-row">
-                        <div class="progress-row-left">
-                            <span class="progress-icon done">✔</span>
-                            <span>Idea Generation</span>
-                        </div>
-                        <span class="progress-percent">100%</span>
-                    </div>
-                    <div class="progress-bar wide"><div class="progress-bar-fill idea" style="width: 100%;"></div></div>
 
-                    <div class="progress-row">
-                        <div class="progress-row-left">
-                            <span class="progress-icon active">▶</span>
-                            <span>Business Planning</span>
-                        </div>
-                        <span class="progress-percent">65%</span>
-                    </div>
-                    <div class="progress-bar wide"><div class="progress-bar-fill biz" style="width: 65%;"></div></div>
-
-                    <div class="progress-row">
-                        <div class="progress-row-left">
-                            <span class="progress-icon idle">⏲</span>
-                            <span>Product Development</span>
-                        </div>
-                        <span class="progress-percent">0%</span>
-                    </div>
-                    <div class="progress-bar wide"><div class="progress-bar-fill idle" style="width: 0%;"></div></div>
-
-                    <button class="pill-btn filled full-width primary-cta" id="btn-continue-learning">Continue Learning</button>
-                </div>
-
-                <div class="progress-card light">
-                    <div class="progress-card-header">
-                        <h3>Achievements</h3>
-                        <p>Badges you've earned</p>
-                    </div>
-                    <div class="badge-list">
-                        <div class="badge-row">
-                            <span class="badge-icon green">✔</span>
-                            <div>
-                                <div class="badge-title">First Lesson</div>
-                                <div class="badge-sub">Completed your first lesson</div>
-                            </div>
-                        </div>
-                        <div class="badge-row">
-                            <span class="badge-icon green">✔</span>
-                            <div>
-                                <div class="badge-title">Module Master</div>
-                                <div class="badge-sub">Finished a complete module</div>
-                            </div>
-                        </div>
-                        <div class="badge-row">
-                            <span class="badge-icon green">✔</span>
-                            <div>
-                                <div class="badge-title">Idea Champion</div>
-                                <div class="badge-sub">Created 5 business ideas</div>
-                            </div>
-                        </div>
-                        <div class="badge-row muted">
-                            <span class="badge-icon gray">●</span>
-                            <div>
-                                <div class="badge-title">Team Player</div>
-                                <div class="badge-sub">Collaborated with a parent</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
         <!-- HERO (Landing) -->
         <section class="hero" id="hero-section">
             <div class="hero-overlay"></div>
@@ -139,8 +64,8 @@
                     <span class="hero-pill">Month 1 is completely free</span>
                     <h1>Build a Business.<br />Build a Bond.</h1>
                     <p class="hero-subtext">
-                        A guided 6-month entrepreneurship program for fathers and their 10–15 year old kids.
-                        Turn ideas into reality together.
+                        A structured 6-month program that helps parents and young builders transform creativity into
+                        real-world projects — <span style="color: var(--primary); font-weight: 700;">together</span>.
                     </p>
                     <div class="hero-actions">
                         <button class="pill-btn filled" id="btn-hero-start">Start Month 1 Free</button>
@@ -260,87 +185,89 @@
         <p class="footer-copy">© <span id="footer-year"></span> Silicon Valley Sprouts Inc. All rights reserved.</p>
     </footer>
 
-<!-- AUTH MODAL -->
-<div class="modal-backdrop hidden" id="auth-modal-backdrop">
-    <div class="modal" id="auth-modal">
-      <button class="modal-close" id="auth-modal-close">✕</button>
-      <div class="auth-grid">
-        <div class="auth-left">
-          <div class="modal-tabs">
-            <button class="modal-tab active" id="tab-signup">Sign Up</button>
-            <button class="modal-tab" id="tab-login">Sign In</button>
-          </div>
+    <!-- AUTH MODAL -->
+    <div class="modal-backdrop hidden" id="auth-modal-backdrop">
+        <div class="modal" id="auth-modal">
+            <button class="modal-close" id="auth-modal-close">✕</button>
+            <div class="auth-grid">
+                <div class="auth-left">
+                    <div class="modal-tabs">
+                        <button class="modal-tab active" id="tab-signup">Sign Up</button>
+                        <button class="modal-tab" id="tab-login">Sign In</button>
+                    </div>
 
-          <form id="form-signup" class="auth-form">
-            <div class="auth-hero-icon">🚀</div>
-            <h3 class="auth-title">Start Your Journey</h3>
-            <p class="auth-subtitle">Join the community of fathers building the future.</p>
-            <label>
-              Email address
-              <input type="email" id="signup-email" placeholder="dad@example.com" required />
-            </label>
-            <label>
-              Password
-              <input type="password" id="signup-password" minlength="6" placeholder="••••••••" required />
-            </label>
-            <button class="pill-btn filled full-width" type="submit">Create Account</button>
-            <p class="auth-hint">
-              Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
-            </p>
-          </form>
+                    <form id="form-signup" class="auth-form">
+                        <div class="auth-hero-icon">🚀</div>
+                        <h3 class="auth-title">Start Your Journey</h3>
+                        <p class="auth-subtitle">Join the community of fathers building the future.</p>
+                        <label>
+                            Email address
+                            <input type="email" id="signup-email" placeholder="dad@example.com" required />
+                        </label>
+                        <label>
+                            Password
+                            <input type="password" id="signup-password" minlength="6" placeholder="••••••••" required />
+                        </label>
+                        <button class="pill-btn filled full-width" type="submit">Create Account</button>
+                        <p class="auth-hint">
+                            Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
+                        </p>
+                    </form>
 
-          <form id="form-login" class="auth-form hidden">
-            <div class="auth-hero-icon">🚀</div>
-            <h3 class="auth-title">Welcome Back</h3>
-            <p class="auth-subtitle">Continue where you left off.</p>
-            <label>
-              Email address
-              <input type="email" id="login-email" placeholder="dad@example.com" required />
-            </label>
-            <label class="password-row">
-              <span>Password</span>
-              <a class="forgot-link" href="#">Forgot password?</a>
-              <input type="password" id="login-password" placeholder="••••••••" required />
-            </label>
-            <button class="pill-btn filled full-width" type="submit">Sign In</button>
-            <p class="auth-hint">
-              Don’t have an account? <span class="auth-switch" id="switch-to-signup">Sign up for free</span>
-            </p>
-          </form>
+                    <form id="form-login" class="auth-form hidden">
+                        <div class="auth-hero-icon">🚀</div>
+                        <h3 class="auth-title">Welcome Back</h3>
+                        <p class="auth-subtitle">Continue where you left off.</p>
+                        <label>
+                            Email address
+                            <input type="email" id="login-email" placeholder="dad@example.com" required />
+                        </label>
+                        <label class="password-row">
+                            <span>Password</span>
+                            <a class="forgot-link" href="#">Forgot password?</a>
+                            <input type="password" id="login-password" placeholder="••••••••" required />
+                        </label>
+                        <button class="pill-btn filled full-width" type="submit">Sign In</button>
+                        <p class="auth-hint">
+                            Don’t have an account? <span class="auth-switch" id="switch-to-signup">Sign up for
+                                free</span>
+                        </p>
+                    </form>
 
-          <p id="auth-error" class="auth-error hidden"></p>
+                    <p id="auth-error" class="auth-error hidden"></p>
+                </div>
+
+                <div class="auth-right">
+                    <div class="auth-quote">
+                        “My son and I learned more in these 6 months than he did in 2 years of business electives.
+                        And we actually built something real.”
+                    </div>
+                    <div class="auth-quote-author">
+                        David M.<br />
+                        Silicon Valley Sprouts Alum
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="auth-right">
-          <div class="auth-quote">
-            “My son and I learned more in these 6 months than he did in 2 years of business electives.
-            And we actually built something real.”
-          </div>
-          <div class="auth-quote-author">
-            David M.<br />
-            Silicon Valley Sprouts Alum
-          </div>
-        </div>
-      </div>
     </div>
-</div>
 
-<!-- CONFIG + APP JS -->
-<script>
-    // TODO: Replace with your own Firebase + Stripe config
-    window.APP_CONFIG = {
-    firebaseConfig: {
-  apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
-  authDomain: "svsprouts-a1350.firebaseapp.com",
-  projectId: "svsprouts-a1350",
-  storageBucket: "svsprouts-a1350.firebasestorage.app",
-  messagingSenderId: "575688818236",
-  appId: "1:575688818236:web:648234b064245b9bf10d39",
-  measurementId: "G-6PTY3QCH6H"
-      },
-      stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
-    };
-</script>
-<script src="app.js"></script>
+    <!-- CONFIG + APP JS -->
+    <script>
+        // TODO: Replace with your own Firebase + Stripe config
+        window.APP_CONFIG = {
+            firebaseConfig: {
+                apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
+                authDomain: "svsprouts-a1350.firebaseapp.com",
+                projectId: "svsprouts-a1350",
+                storageBucket: "svsprouts-a1350.firebasestorage.app",
+                messagingSenderId: "575688818236",
+                appId: "1:575688818236:web:648234b064245b9bf10d39",
+                measurementId: "G-6PTY3QCH6H"
+            },
+            stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
+        };
+    </script>
+    <script src="app.js"></script>
 </body>
+
 </html>
