@@ -28,7 +28,7 @@
   <header class="nav">
     <div class="nav-left">
       <a class="logo" href="index.html">
-        <img class="logo-icon" src="image/sprouts_yellow.png" alt="Silicon Valley Sprouts logo" />
+        <img class="logo-icon" src="image/sprouts_orange.png" alt="Silicon Valley Sprouts logo" />
         <span class="logo-text">Silicon Valley Sprouts</span>
       </a>
       <nav class="nav-links">
@@ -39,13 +39,11 @@
       </nav>
     </div>
     <div class="nav-right" id="nav-auth">
-      <button class="link-btn" id="btn-open-login">My Progress</button>
       <button class="pill-btn" id="btn-open-signup">Sign Up</button>
     </div>
 
     <!-- After login -->
     <div class="nav-right hidden" id="nav-user">
-      <button class="link-btn" id="btn-go-dashboard">My Progress</button>
       <span id="nav-user-email" class="nav-user-email"></span>
       <button class="pill-btn outline" id="btn-logout">Sign Out</button>
     </div>
@@ -53,23 +51,28 @@
 
   <main class="curriculum-shell">
     <section class="curriculum-header">
-      <div class="curriculum-badges">
-        <div class="level-chip">
-          <span class="level-num">3</span>
-          <div class="xp-bar">
-            <div class="xp-fill" style="width: 65%;"></div>
-          </div>
-          <span class="xp-text">1100 XP</span>
-          <span class="xp-total">/ 1500</span>
-        </div>
-        <div class="streak-chip">
-          <span class="streak-icon">🔥</span>
+      <div class="mini-streaks" style="margin-top: 0;">
+        <div class="mini-streak">
+          <div class="metric-icon">⚡️</div>
           <div>
-            <div class="streak-label">0 Day</div>
-            <div class="streak-sub">Streak</div>
+            <p class="metric-label">XP</p>
+            <p class="metric-value xp-text">1100</p>
           </div>
         </div>
-        <div class="title-chip">🏆 Hustler</div>
+        <div class="mini-streak">
+          <div class="metric-icon flame">🔥</div>
+          <div>
+            <p class="metric-label">Current Streak</p>
+            <p class="metric-value streak-label">0</p>
+          </div>
+        </div>
+        <div class="mini-streak">
+          <div class="metric-icon">🏅</div>
+          <div>
+            <p class="metric-label">Highest Streak</p>
+            <p class="metric-value highest-streak">0</p>
+          </div>
+        </div>
       </div>
 
       <div class="curriculum-title">
@@ -227,6 +230,61 @@
         </div>
       </div>
     </section>
+
+    <section class="curriculum-list" style="margin-top: 32px;">
+      <div class="month-row" style="border: 1px dashed var(--border); background: var(--bg-alt);">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Sprouts Package</span>
+            <span class="chip-free" style="background: #fef3c7; color: #b45309;">Advanced</span>
+          </div>
+          <h3>Go to Market Strategy</h3>
+          <p>Plan launch channels, positioning, and early traction loops.</p>
+        </div>
+        <div class="month-actions">
+          <a class="pill-btn filled dark" href="pricing.html">Upgrade to Sprouts</a>
+        </div>
+      </div>
+      <div class="month-row" style="border: 1px dashed var(--border); background: var(--bg-alt);">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Sprouts Package</span>
+            <span class="chip-free" style="background: #fef3c7; color: #b45309;">Advanced</span>
+          </div>
+          <h3>Pricing Strategy</h3>
+          <p>Model value-based pricing, discounts, and experiments.</p>
+        </div>
+        <div class="month-actions">
+          <a class="pill-btn filled dark" href="pricing.html">Upgrade to Sprouts</a>
+        </div>
+      </div>
+      <div class="month-row" style="border: 1px dashed var(--border); background: var(--bg-alt);">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Sprouts Package</span>
+            <span class="chip-free" style="background: #fef3c7; color: #b45309;">Advanced</span>
+          </div>
+          <h3>Sales Strategy</h3>
+          <p>Build a repeatable sales motion and conversion scripts.</p>
+        </div>
+        <div class="month-actions">
+          <a class="pill-btn filled dark" href="pricing.html">Upgrade to Sprouts</a>
+        </div>
+      </div>
+      <div class="month-row" style="border: 1px dashed var(--border); background: var(--bg-alt);">
+        <div>
+          <div class="month-meta">
+            <span class="month-label">Sprouts Package</span>
+            <span class="chip-free" style="background: #fef3c7; color: #b45309;">Advanced</span>
+          </div>
+          <h3>Post Sales Strategy</h3>
+          <p>Onboarding, retention, and expanding customer value.</p>
+        </div>
+        <div class="month-actions">
+          <a class="pill-btn filled dark" href="pricing.html">Upgrade to Sprouts</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- AUTH MODAL -->
@@ -241,7 +299,7 @@
           </div>
 
           <form id="form-signup" class="auth-form">
-            <div class="auth-hero-icon">🚀</div>
+            <div class="auth-hero-icon"><img src="image/sprouts_orange.png" alt="Sprouts logo" style="width: 42px; height: 42px;"></div>
             <h3 class="auth-title">Start Your Journey</h3>
             <p class="auth-subtitle">Join the community of fathers building the future.</p>
             <label>
@@ -259,7 +317,7 @@
           </form>
 
           <form id="form-login" class="auth-form hidden">
-            <div class="auth-hero-icon">🚀</div>
+            <div class="auth-hero-icon"><img src="image/sprouts_orange.png" alt="Sprouts logo" style="width: 42px; height: 42px;"></div>
             <h3 class="auth-title">Welcome Back</h3>
             <p class="auth-subtitle">Continue where you left off.</p>
             <label>

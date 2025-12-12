@@ -13,7 +13,7 @@
   <header class="nav">
     <div class="nav-left">
       <a class="logo" href="index.html">
-        <img class="logo-icon" src="image/sprouts_yellow.png" alt="Silicon Valley Sprouts logo" />
+        <img class="logo-icon" src="image/sprouts_orange.png" alt="Silicon Valley Sprouts logo" />
         <span class="logo-text">Silicon Valley Sprouts</span>
       </a>
       <nav class="nav-links">
@@ -24,91 +24,71 @@
       </nav>
     </div>
     <div class="nav-right">
-      <button class="link-btn">My Progress</button>
       <button class="pill-btn">Sign Up</button>
     </div>
   </header>
 
   <main class="challenge-main">
     <section class="challenge-hero">
-      <div class="challenge-hero-card">
-        <div class="challenge-hero-left">
-          <p class="challenge-kicker">Watch 1 video a day · Build an entrepreneur mindset in 100 days</p>
-          <h1 class="challenge-title">Today's Watch Challenge</h1>
-          <div class="challenge-tags">
+      <div class="challenge-hero-card" style="padding: 28px; border-radius: 18px; background: linear-gradient(135deg, #313644, #6f86b6 35%, #0ea5e9 120%); border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 20px 45px rgba(0,0,0,0.22); display: flex; flex-direction: column; gap: 16px; align-items: center;">
+        <div style="text-align: center; max-width: 900px; width: 100%;">
+          <p class="challenge-kicker" style="color: #ffffff; margin-bottom: 6px;">Watch 1 video a day · Build an entrepreneur mindset in 100 days</p>
+          <h1 class="challenge-title" style="color: #fff; margin: 0;">Today's Watch Challenge</h1>
+          <div class="challenge-tags" style="justify-content: center; margin: 12px 0 16px;">
             <span class="tag tag-blue">GTM</span>
             <span class="tag tag-green">Pricing</span>
             <span class="tag tag-purple">Mindset</span>
           </div>
-          <p class="challenge-video-title">How teen founders test pricing in 24 hours</p>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Today's video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <div class="video-embed" style="width: 100%; overflow: hidden; border-radius: 14px; box-shadow: 0 12px 30px rgba(0,0,0,0.35);">
+            <iframe width="100%" height="420" src="https://www.youtube.com/embed/0lJKucu6HJc?si=cvJ4N2uEEkxrhK5T" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
-          <p class="challenge-duration">5 MIN · Youth-friendly breakdown</p>
-          <div class="challenge-actions">
+          <div class="challenge-actions" style="justify-content: center; gap: 14px; margin-top: 10px;">
+            <p class="challenge-duration" style="color: #e2e8f0; margin: 0;">5 MIN · Youth-friendly breakdown</p>
             <button class="pill-btn filled primary" id="mark-watched">Mark as Watched</button>
             <span class="challenge-hint">+5 XP · +1 Streak</span>
           </div>
         </div>
-        <div class="challenge-hero-right">
-          <div class="ring-wrap">
-            <svg class="progress-ring" viewBox="0 0 140 140">
-              <circle class="ring-bg" cx="70" cy="70" r="60" />
-              <circle class="ring-progress" cx="70" cy="70" r="60" />
-            </svg>
-            <div class="ring-label">
-              <div class="ring-day">Day <span id="day-count">12</span></div>
-              <div class="ring-total">of 100</div>
-            </div>
-          </div>
-          <div class="mini-meta">
-            <div class="meta-row">
-              <span class="meta-label">Current Level</span>
-              <span class="meta-value" id="level-label">Level 3 · Young Marketer</span>
-            </div>
-            <div class="meta-row">
-              <span class="meta-label">XP</span>
-              <span class="meta-value" id="xp-label">250 / 400</span>
-            </div>
-          </div>
-          <div class="mini-streaks">
-            <div class="mini-streak">
-              <div class="metric-icon flame">🔥</div>
-              <div>
-                <p class="metric-label">Current Streak</p>
-                <p class="metric-value" id="current-streak">6</p>
-              </div>
-            </div>
-            <div class="mini-streak">
-              <div class="metric-icon trophy">🏆</div>
-              <div>
-                <p class="metric-label">Highest Streak</p>
-                <p class="metric-value" id="highest-streak">10</p>
+
+        <div class="hero-stats" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; align-items: stretch;">
+          <div class="stat-card" style="background: #abc2d4; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; display: flex; justify-content: center; align-items: center;">
+            <div class="ring-wrap">
+              <svg class="progress-ring" viewBox="0 0 140 140">
+                <circle class="ring-bg" cx="70" cy="70" r="60" />
+                <circle class="ring-progress" cx="70" cy="70" r="60" />
+              </svg>
+              <div class="ring-label">
+                <div class="ring-day">Day <span id="day-count">12</span></div>
+                <div class="ring-total">of 100</div>
               </div>
             </div>
           </div>
-          <div class="badge-card hero-badges">
-            <p class="badge-title">Pattern Badges</p>
-            <div class="badge-row">
-              <div class="badge unlocked">
-                <span class="badge-icon">🌟</span>
-                <span>Consistency Star</span>
+          <div class="stat-card" style="background: #abc2d4; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px;">
+            <div class="mini-meta" style="margin: 0;">
+              <div class="meta-row">
+                <span class="meta-label">Current Level</span>
+                <span class="meta-value" id="level-label">Level 3 · Young Marketer</span>
               </div>
-              <div class="badge unlocked">
-                <span class="badge-icon">🔥</span>
-                <span>Monday Momentum</span>
+              <div class="meta-row">
+                <span class="meta-label">XP</span>
+                <span class="meta-value" id="xp-label">250 / 400</span>
               </div>
-              <div class="badge locked" title="Watch 7 days in a row to unlock">
-                <span class="badge-icon">🎯</span>
-                <span>Weekend Warrior</span>
+            </div>
+          </div>
+          <div class="stat-card" style="background: #abc2d4; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px;">
+            <div class="mini-streaks" style="margin: 0;">
+              <div class="mini-streak">
+                <div class="metric-icon flame">🔥</div>
+                <div>
+                  <p class="metric-label">Current Streak</p>
+                  <p class="metric-value" id="current-streak">6</p>
+                </div>
               </div>
-              <div class="badge locked" title="Watch 3 nights in a row">
-                <span class="badge-icon">🌙</span>
-                <span>Night Owl</span>
-              </div>
-              <div class="badge locked" title="Bounce back after a miss">
-                <span class="badge-icon">💪</span>
-                <span>Comeback Kid</span>
+              <div class="mini-streak">
+                <div class="metric-icon trophy">🏆</div>
+                <div>
+                  <p class="metric-label">Highest Streak</p>
+                  <p class="metric-value" id="highest-streak">10</p>
+                </div>
               </div>
             </div>
           </div>
