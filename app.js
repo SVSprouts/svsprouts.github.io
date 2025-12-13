@@ -26,6 +26,190 @@
   const navUserEmail = document.getElementById("nav-user-email");
   const roadmapSection = document.getElementById("curriculum");
 
+  // FEATURE: Mobile nav toggle upgraded to slide-in sidebar
+  (function initMobileNavToggle() {
+    const nav = document.querySelector(".nav");
+    const navLeft = document.querySelector(".nav-left");
+    const navLinks = document.querySelector(".nav-links");
+    const navLogo = navLeft ? navLeft.querySelector(".logo") : null;
+    const navAuthEl = document.getElementById("nav-auth");
+    const navUserEl = document.getElementById("nav-user");
+    if (!nav || !navLeft || !navLinks || !navAuthEl || !navUserEl) return;
+
+    const STYLE_ID = "feature-nav-toggle-style";
+    if (!document.getElementById(STYLE_ID)) {
+      const style = document.createElement("style");
+      style.id = STYLE_ID;
+      style.textContent = `
+        /* FEATURE: mobile nav sidebar */
+        .feature-nav-toggle { display: none; }
+        .feature-nav-drawer-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(15, 23, 42, 0.5);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.25s ease;
+          z-index: 1000;
+        }
+        .feature-nav-drawer {
+          position: absolute;
+          top: 0;
+          right: 0;
+          height: 100%;
+          width: 320px;
+          max-width: 82vw;
+          background: #fff;
+          box-shadow: -6px 0 24px rgba(15, 23, 42, 0.12);
+          padding: 18px 18px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          transform: translateX(100%);
+          transition: transform 0.3s ease;
+        }
+        .feature-nav-drawer header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .feature-nav-drawer .feature-nav-close {
+          background: transparent;
+          border: none;
+          font-size: 24px;
+          padding: 8px;
+          cursor: pointer;
+          color: #0f172a;
+        }
+        .feature-nav-drawer .nav-links {
+          display: flex !important;
+          flex-direction: column;
+          gap: 12px;
+          width: 100%;
+        }
+        .feature-nav-drawer .nav-right {
+          display: flex !important;
+          gap: 10px;
+          width: 100%;
+        }
+        .feature-nav-drawer .pill-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        body.feature-nav-drawer-open {
+          overflow: hidden;
+        }
+        body.feature-nav-drawer-open .feature-nav-drawer-backdrop {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        body.feature-nav-drawer-open .feature-nav-drawer {
+          transform: translateX(0);
+        }
+        @media (max-width: 860px) {
+          .feature-nav-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 9px 11px;
+            font-size: 20px;
+            line-height: 1;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+          }
+          .nav .nav-links {
+            display: none;
+          }
+          .nav #nav-auth,
+          .nav #nav-user {
+            display: none;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "feature-nav-toggle";
+    toggle.setAttribute("aria-label", "Toggle navigation");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.innerHTML = "☰";
+    if (navLeft && navLogo) {
+      navLeft.insertBefore(toggle, navLinks);
+    } else {
+      nav.insertBefore(toggle, navAuthEl);
+    }
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "feature-nav-drawer-backdrop";
+
+    const drawer = document.createElement("div");
+    drawer.className = "feature-nav-drawer";
+
+    const drawerHeader = document.createElement("header");
+    const drawerTitle = document.createElement("div");
+    drawerTitle.textContent = "Menu";
+    drawerTitle.style.fontWeight = "700";
+    drawerTitle.style.fontSize = "1rem";
+
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "feature-nav-close";
+    closeBtn.setAttribute("aria-label", "Close navigation");
+    closeBtn.textContent = "✕";
+
+    drawerHeader.appendChild(drawerTitle);
+    drawerHeader.appendChild(closeBtn);
+    drawer.appendChild(drawerHeader);
+    backdrop.appendChild(drawer);
+    document.body.appendChild(backdrop);
+
+    function setNavOpen(isOpen) {
+      if (isOpen) {
+        drawer.appendChild(navLinks);
+        drawer.appendChild(navAuthEl);
+        drawer.appendChild(navUserEl);
+        document.body.classList.add("feature-nav-drawer-open");
+      } else {
+        if (!navLinks.parentElement || navLinks.parentElement !== navLeft) {
+          navLeft.appendChild(navLinks);
+        }
+        if (!navAuthEl.parentElement || navAuthEl.parentElement !== nav) {
+          nav.appendChild(navAuthEl);
+        }
+        if (!navUserEl.parentElement || navUserEl.parentElement !== nav) {
+          nav.appendChild(navUserEl);
+        }
+        document.body.classList.remove("feature-nav-drawer-open");
+      }
+      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    }
+
+    toggle.addEventListener("click", () => {
+      const nowOpen = !document.body.classList.contains("feature-nav-drawer-open");
+      setNavOpen(nowOpen);
+    });
+
+    closeBtn.addEventListener("click", () => setNavOpen(false));
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) setNavOpen(false);
+    });
+
+    navLinks.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setNavOpen(false));
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 860) {
+        setNavOpen(false);
+      }
+    });
+  })();
+
   const btnHeroStart = document.getElementById("btn-hero-start");
   const btnHeroCurriculum = document.getElementById("btn-hero-curriculum");
   const btnRoadmapStart = document.getElementById("btn-roadmap-start");
