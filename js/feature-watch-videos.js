@@ -27,7 +27,7 @@
   const fallbackVideos = [
     {
       day: 1,
-      title: "Why a 100-day watch challenge works",
+      title: "How to Succeed with a Startup",
       url: "https://www.youtube.com/embed/0lJKucu6HJc?rel=0",
       tags: ["Mindset"],
       duration: "5 min",

@@ -8,7 +8,7 @@ const state = {
   level: 3,
   heatmap: Array.from({ length: 100 }, (_, i) => (i % 7 === 0 ? 0 : Math.floor(Math.random() * 3))),
   videos: [
-    { day: 1, title: "Why a 100-day watch challenge works", tags: ["Mindset"], duration: "4 min", watched: true },
+    { day: 1, title: "How to Succeed with a Startup", tags: ["Mindset"], duration: "4 min", watched: true },
     { day: 2, title: "How to Succeed with a Startup", tags: ["Creativity"], duration: "6 min", watched: true },
     { day: 3, title: "How to talk to your first 5 users", tags: ["GTM"], duration: "5 min", watched: true },
     { day: 4, title: "Pricing like a lemonade stand pro", tags: ["Pricing"], duration: "5 min", watched: true },
