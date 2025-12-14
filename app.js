@@ -382,6 +382,14 @@
     { id: 5, title: "Money & Marketing", desc: "Learn pricing, budgeting and spreading the word." },
     { id: 6, title: "Launch & Pitch", desc: "Showcase what you built to friends and family." },
   ];
+  const COURSE_PATHS = {
+    1: "course-month1-582941.html",
+    2: "course-month2-739205.html",
+    3: "course-month3-184362.html",
+    4: "course-month4-930572.html",
+    5: "course-month5-420195.html",
+    6: "course-month6-857319.html",
+  };
 
   // ---------- UI helpers ----------
   function showElement(el) {
@@ -468,8 +476,8 @@
   function updateMonthLinkTargets(isSignedIn) {
     const links = document.querySelectorAll(".month-link");
     links.forEach((link) => {
-      const month = link.getAttribute("data-month") || "1";
-      const target = isSignedIn ? `course-month${month}.html` : "#";
+      const month = Number(link.getAttribute("data-month") || "1");
+      const target = isSignedIn ? COURSE_PATHS[month] || `course-month${month}.html` : "#";
       link.setAttribute("href", target);
     });
   }
@@ -743,13 +751,13 @@
 
       const btn = document.createElement("a");
       btn.className = "pill-btn outline";
-      btn.href = "course-month1.html";
+      btn.href = COURSE_PATHS[m.id] || "course-month1.html";
       if (m.id > 1 && subscriptionStatus !== "paid") {
         btn.textContent = "Upgrade";
         btn.href = "pricing.html";
       } else {
         btn.textContent = progress >= 100 ? "Review" : "Continue";
-        btn.href = "course-month1.html";
+        btn.href = COURSE_PATHS[m.id] || "course-month1.html";
       }
 
       right.appendChild(pb);
