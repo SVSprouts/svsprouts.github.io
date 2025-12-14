@@ -34,7 +34,7 @@
     },
     {
       day: 2,
-      title: "Spotting problems at school & home",
+      title: "How to Succeed with a Startup",
       url: "https://www.youtube.com/embed/0lJKucu6HJc?rel=0",
       tags: ["Creativity"],
       duration: "6 min",
