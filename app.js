@@ -138,6 +138,14 @@
   const db = firebase.firestore();
   const functions = firebase.functions();
 
+  // FEATURE: Service worker fix to avoid caching POST/unsupported requests
+  (function registerSafeServiceWorker() {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker
+      .register("sw-fix.js")
+      .catch((err) => console.warn("FEATURE: SW register failed", err));
+  })();
+
   // Init Stripe
   const stripe = Stripe(stripePublishableKey);
 

@@ -197,5 +197,5 @@
 
   // Expose for manual invocation
   window.seedWatchVideos = seedWatchVideos;
-  console.log("FEATURE seed: call window.seedWatchVideos() to pull watchchallengevideos.md and push to Firestore.");
+  // console.log("FEATURE seed: call window.seedWatchVideos() to pull watchchallengevideos.md and push to Firestore.");
 })();
