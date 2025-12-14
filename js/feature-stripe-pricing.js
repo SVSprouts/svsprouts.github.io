@@ -1,8 +1,8 @@
 // FEATURE: Stripe pricing table embed
 (function () {
   const PRICING_TABLE_SCRIPT = "https://js.stripe.com/v3/pricing-table.js";
-  const PRICING_TABLE_ID = "prctbl_1SdnA1DonUqpdkqNkjWZILgi";
-  const PUBLISHABLE_KEY = "pk_test_CK9PVsKzFmSEbegYq3YY71DR";
+  const PRICING_TABLE_ID = "prctbl_1SeAj7DonUqpdkqNMkhtznnE";
+  const PUBLISHABLE_KEY = "pk_live_AKmCDeWsBygXWEFcImhUF6JC";
   const EXTENSION_CONTAINER_ID = "feature-stripe-pricing-container";
 
   function ensurePricingTableScript() {
