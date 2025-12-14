@@ -1,9 +1,9 @@
 const state = {
-  day: 12,
+  day: 100,
   totalDays: 100,
-  streak: 6,
-  highest: 10,
-  xp: 250,
+  streak: 0,
+  highest: 0,
+  xp: 0,
   xpTarget: 400,
   level: 3,
   heatmap: Array.from({ length: 100 }, (_, i) => (i % 7 === 0 ? 0 : Math.floor(Math.random() * 3))),
@@ -50,8 +50,12 @@ function renderRing() {
 
 function renderXP() {
   const pct = Math.min(100, Math.round((state.xp / state.xpTarget) * 100));
-  elements.levelLabel.textContent = `Level ${state.level} · Young Marketer`;
-  elements.xpLabel.textContent = `${state.xp} / ${state.xpTarget}`;
+  if (elements.levelLabel) {
+    elements.levelLabel.textContent = `Level ${state.level} · Young Marketer`;
+  }
+  if (elements.xpLabel) {
+    elements.xpLabel.textContent = `${state.xp} / ${state.xpTarget}`;
+  }
 
   if (elements.xpFill) {
     elements.xpFill.style.width = `${pct}%`;
