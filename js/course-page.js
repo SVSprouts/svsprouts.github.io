@@ -247,3 +247,12 @@
     );
   }
 })();
+
+// FEATURE: Load Firestore sync for course progress
+(function loadCourseFirestoreFeature() {
+  if (document.querySelector('script[data-feature-course-firestore]')) return;
+  const script = document.createElement('script');
+  script.src = 'js/feature-course-firestore.js';
+  script.dataset.featureCourseFirestore = 'true';
+  document.head.appendChild(script);
+})();
