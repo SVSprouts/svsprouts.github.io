@@ -2,6 +2,136 @@
 (function () {
   const { firebaseConfig, stripePublishableKey } = window.APP_CONFIG || {};
 
+  // FEATURE: SEO enhancements (meta, canonical, JSON-LD)
+  (function enhanceSEO() {
+    const head = document.head;
+    if (!head) return;
+
+    const PAGE_META = {
+      "index.html": {
+        title: "Silicon Valley Sprouts | Entrepreneurship for Kids & Parents",
+        description:
+          "6-month entrepreneurship curriculum for families—daily challenges, pricing lessons, and real projects to build together.",
+      },
+      "curriculum.html": {
+        title: "Curriculum | Silicon Valley Sprouts",
+        description:
+          "Explore the 6-month entrepreneurship roadmap: idea validation, prototyping, branding, pricing, launch, and more.",
+      },
+      "pricing.html": {
+        title: "Pricing | Silicon Valley Sprouts",
+        description:
+          "Choose the best plan for your family to access the full 6-month entrepreneurship curriculum, challenges, and resources.",
+      },
+      "watch-challenge.html": {
+        title: "Daily Watch Challenge | Silicon Valley Sprouts",
+        description:
+          "100-day video challenge to build entrepreneurial mindset—track streaks, XP, and progress with daily content.",
+      },
+      "parent-corner.html": {
+        title: "Parent Corner | Silicon Valley Sprouts",
+        description:
+          "Guides and articles to support parents mentoring young entrepreneurs through the Sprouts curriculum.",
+      },
+    };
+
+    const pageKey = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    const pageMeta = PAGE_META[pageKey] || {
+      title: document.title || "Silicon Valley Sprouts",
+      description:
+        "Entrepreneurship lessons, challenges, and resources for kids and parents to build together.",
+    };
+
+    function upsertMeta(name, content) {
+      if (!content) return;
+      let tag = document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement("meta");
+        tag.name = name;
+        head.appendChild(tag);
+      }
+      tag.content = content;
+    }
+
+    function ensureCanonical() {
+      const href = `${location.origin}${location.pathname}`;
+      let link = document.querySelector('link[rel="canonical"]');
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "canonical";
+        head.appendChild(link);
+      }
+      link.href = href;
+    }
+
+    function injectJsonLd() {
+      const existing = document.getElementById("feature-seo-jsonld");
+      if (existing) return;
+      const baseUrl = `${location.origin}`;
+      const pageUrl = `${location.origin}${location.pathname}`;
+
+      const org = {
+        "@type": "Organization",
+        "@id": `${baseUrl}#organization`,
+        name: "Silicon Valley Sprouts",
+        url: baseUrl,
+        logo: `${baseUrl}/image/sprouts_orange.png`,
+      };
+
+      const website = {
+        "@type": "WebSite",
+        "@id": `${baseUrl}#website`,
+        url: baseUrl,
+        name: "Silicon Valley Sprouts",
+      };
+
+      const breadcrumb = {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: `${baseUrl}/index.html`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: pageMeta.title,
+            item: pageUrl,
+          },
+        ],
+      };
+
+      const webpage = {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: pageMeta.title,
+        description: pageMeta.description,
+        isPartOf: { "@id": `${baseUrl}#website` },
+        breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
+      };
+
+      const ld = {
+        "@context": "https://schema.org",
+        "@graph": [org, website, breadcrumb, webpage],
+      };
+
+      const script = document.createElement("script");
+      script.id = "feature-seo-jsonld";
+      script.type = "application/ld+json";
+      script.textContent = JSON.stringify(ld);
+      head.appendChild(script);
+    }
+
+    // Apply SEO tags
+    upsertMeta("description", pageMeta.description);
+    ensureCanonical();
+    injectJsonLd();
+  })();
+
   // Init Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
