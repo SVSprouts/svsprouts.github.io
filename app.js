@@ -156,6 +156,30 @@
   const navUserEmail = document.getElementById("nav-user-email");
   const roadmapSection = document.getElementById("curriculum");
 
+  // FEATURE: Badge for subscription status
+  function renderSubscriptionBadge(status) {
+    const existing = document.getElementById("feature-subscription-badge");
+    if (existing && existing.parentElement) existing.parentElement.removeChild(existing);
+    if (!navUserEmail) return;
+    const labelMap = {
+      free: "Sprouts Starter",
+      basic: "Sprouts Basic",
+      paid: "Sprouts",
+    };
+    const text = labelMap[status] || "Free";
+    const badge = document.createElement("span");
+    badge.id = "feature-subscription-badge";
+    badge.textContent = text;
+    badge.style.marginLeft = "8px";
+    badge.style.padding = "4px 8px";
+    badge.style.borderRadius = "999px";
+    badge.style.fontSize = "0.8rem";
+    badge.style.fontWeight = "700";
+    badge.style.background = status === "paid" ? "#f58234" : "#e2e8f0";
+    badge.style.color = status === "paid" ? "#fff" : "#0f172a";
+    navUserEmail.insertAdjacentElement("afterend", badge);
+  }
+
   // FEATURE: Mobile nav toggle upgraded to slide-in sidebar
   (function initMobileNavToggle() {
     const nav = document.querySelector(".nav");
@@ -651,6 +675,7 @@
 
       await createUserDocIfNeeded(user);
       await loadUserState(user.uid);
+      renderSubscriptionBadge(subscriptionStatus);
     } else {
       // Logged out
       clearWelcome();
@@ -660,6 +685,7 @@
       hideElement(navUser);
       showElement(navAuth);
       updateMonthLinkTargets(false);
+      renderSubscriptionBadge("free");
     }
   });
 
@@ -695,6 +721,7 @@
     renderDashboard(data);
     attachMonthLinkGuards();
     attachParentArticleGuards();
+    renderSubscriptionBadge(subscriptionStatus);
   }
 
   function renderDashboard(userData) {
