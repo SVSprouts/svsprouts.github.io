@@ -4,7 +4,7 @@ const state = {
   streak: 0,
   highest: 0,
   xp: 0,
-  xpTarget: 400,
+  xpTarget: 1000,
   level: 3,
   heatmap: Array.from({ length: 100 }, (_, i) => (i % 7 === 0 ? 0 : Math.floor(Math.random() * 3))),
   videos: [
