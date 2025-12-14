@@ -10,7 +10,7 @@
   let auth = null;
   let userState = null;
   let videos = [];
-  const TOTAL_DAYS = 100;
+  const DEFAULT_TOTAL_DAYS = 100;
 
   const els = {
     iframe: document.querySelector(".video-embed iframe"),
@@ -77,10 +77,11 @@
     return new Date().toISOString().slice(0, 10);
   }
 
-  function defaultState() {
+  function defaultState(totalDays) {
+    const total = totalDays || DEFAULT_TOTAL_DAYS;
     return {
       currentDay: 1,
-      totalDays: TOTAL_DAYS,
+      totalDays: total,
       streak: 0,
       highest: 0,
       xp: 0,
@@ -202,14 +203,19 @@
 
   function render(state) {
     const current = state.currentDay;
+    const displayDay =
+      state.watchCounts?.[current] && state.watchCounts[current] > 0
+        ? current
+        : Math.max(1, current - 1);
     const total = state.totalDays;
-    const video = videos.find((v) => v.day === current) || videos[0];
+    const video =
+      videos.find((v) => v.day === current) || videos[current - 1] || videos[videos.length - 1];
     renderVideo(video);
-    if (els.dayLabel) els.dayLabel.textContent = current;
+    if (els.dayLabel) els.dayLabel.textContent = displayDay;
     if (els.streak) els.streak.textContent = state.streak || 0;
     if (els.highest) els.highest.textContent = state.highest || 0;
     if (els.xp) els.xp.textContent = `${state.xp} XP`;
-    renderRing(current, total);
+    renderRing(displayDay, total);
     renderHeatmap(state);
     renderVideoList(state);
   }
@@ -296,21 +302,22 @@
     videos = (await loadVideos()) || fallbackVideos;
     if (!videos.length) videos = fallbackVideos;
 
-    userState = defaultState();
+    const totalDays = Math.max(videos.length || 0, DEFAULT_TOTAL_DAYS);
+    userState = defaultState(totalDays);
     render(userState);
 
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
-        userState = defaultState();
+        userState = defaultState(totalDays);
         render(userState);
         return;
       }
       rebindMarkButton(user.uid);
       const snap = await db.collection("users").doc(user.uid).get();
       const remote = snap.data()?.watchChallenge || {};
-      userState = normalizeUserData(remote, TOTAL_DAYS);
-      userState.currentDay = selectCurrentDay(userState, TOTAL_DAYS);
-      userState.totalDays = TOTAL_DAYS;
+      userState = normalizeUserData(remote, totalDays);
+      userState.currentDay = selectCurrentDay(userState, totalDays);
+      userState.totalDays = totalDays;
       render(userState);
     });
   }
