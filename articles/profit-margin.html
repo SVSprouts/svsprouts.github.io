@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Explaining “Profit Margin” to a 12-Year-Old | Silicon Valley Sprouts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../style.css" />
+
+  <!-- Firebase (compat for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+
+  <!-- Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body class="parent-body">
+  <header class="nav">
+    <div class="nav-left">
+      <a class="logo" href="../index.html">
+        <img class="logo-icon" src="../image/sprouts_orange.png" alt="Silicon Valley Sprouts logo" />
+        <span class="logo-text">Silicon Valley Sprouts</span>
+      </a>
+      <nav class="nav-links">
+        <a href="../curriculum.html">Curriculum</a>
+        <a href="../watch-challenge.html">Daily Challenge</a>
+        <a href="../parent-corner.html">Parent Corner</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+    </div>
+    <div class="nav-right" id="nav-auth">
+      <button class="pill-btn" id="btn-open-signup">Sign Up</button>
+    </div>
+
+    <div class="nav-right hidden" id="nav-user">
+      <span id="nav-user-email" class="nav-user-email"></span>
+      <button class="pill-btn outline" id="btn-logout">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="parent-shell" style="max-width: 900px;">
+    <article class="parent-card" style="margin-top: 24px;">
+      <div class="parent-card-body">
+        <div class="parent-meta">
+          <span class="tag orange">Business</span>
+          <span class="meta-detail">4 min read</span>
+        </div>
+        <h1 style="margin: 8px 0 12px;">Explaining “Profit Margin” to a 12-Year-Old</h1>
+        <p>Simple analogies and real-world examples to make financial concepts stick.</p>
+        <hr>
+        <p>Kids understand money best when it’s tied to something they experience. Profit margin is just “what’s left after you pay for stuff”—but it sounds abstract until you make it concrete.</p>
+        <h3>Start with a Lemonade Stand</h3>
+        <p>“We sell each cup for $1. It costs us 40¢ for lemons, sugar, and cups. So we keep 60¢. That 60¢ is our profit. Our profit margin is 60%.”</p>
+        <p>Why this works: they can see the input costs and the money left over.</p>
+        <h3>Move to Their World</h3>
+        <ul>
+          <li><strong>Snacks:</strong> Buy a pack of 10 bars for $10, sell each for $2. Revenue is $20, costs are $10, profit is $10, margin is 50%.</li>
+          <li><strong>Digital goods:</strong> If they make a $5 Canva template and sell for $8, cost is $5 (their time/design), profit is $3, margin is 37.5%.</li>
+        </ul>
+        <h3>Show Why Margin Matters</h3>
+        <p>Higher margin = more room to cover mistakes, discounts, and growth. Low margin means every error hurts.</p>
+        <h3>Common Mistake: Forgetting Hidden Costs</h3>
+        <p>Packaging, delivery, refunds, and time all count. Ask, “Did we forget any costs?” to build the habit.</p>
+        <h3>Make It a Game</h3>
+        <ul>
+          <li>Challenge: “Can we improve the margin without making it worse for customers?”</li>
+          <li>Ideas: Buy supplies in bulk, bundle products, or add a digital add-on with near-0 cost.</li>
+        </ul>
+        <h3>Keep It Actionable</h3>
+        <p>Have them track a simple sheet: price, cost, profit, margin %. Review after a week. Celebrate improvements and talk about tradeoffs.</p>
+        <p>When kids can see where money goes and what’s left, “profit margin” stops being jargon. It becomes a tool they can use to build smarter projects.</p>
+      </div>
+    </article>
+  </main>
+
+  <div class="modal-backdrop hidden" id="auth-modal-backdrop">
+    <div class="modal" id="auth-modal">
+      <button class="modal-close" id="auth-modal-close">✕</button>
+      <div class="auth-grid">
+        <div class="auth-left">
+          <div class="modal-tabs">
+            <button class="modal-tab active" id="tab-signup">Sign Up</button>
+            <button class="modal-tab" id="tab-login">Sign In</button>
+          </div>
+
+          <form id="form-signup" class="auth-form">
+            <div class="auth-hero-icon"><img src="../image/sprouts_orange.png" alt="Sprouts logo" style="width: 42px; height: 42px;"></div>
+            <h3 class="auth-title">Start Your Journey</h3>
+            <p class="auth-subtitle">Join the community of fathers building the future.</p>
+            <label>
+              Email address
+              <input type="email" id="signup-email" placeholder="dad@example.com" required />
+            </label>
+            <label>
+              Password
+              <input type="password" id="signup-password" minlength="6" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Create Account</button>
+            <p class="auth-hint">
+              Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
+            </p>
+          </form>
+
+          <form id="form-login" class="auth-form hidden">
+            <div class="auth-hero-icon"><img src="../image/sprouts_orange.png" alt="Sprouts logo" style="width: 42px; height: 42px;"></div>
+            <h3 class="auth-title">Welcome Back</h3>
+            <p class="auth-subtitle">Continue where you left off.</p>
+            <label>
+              Email address
+              <input type="email" id="login-email" placeholder="dad@example.com" required />
+            </label>
+            <label class="password-row">
+              <span>Password</span>
+              <a class="forgot-link" href="#">Forgot password?</a>
+              <input type="password" id="login-password" placeholder="••••••••" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Sign In</button>
+            <p class="auth-hint">
+              Don’t have an account? <span class="auth-switch" id="switch-to-signup">Sign up for free</span>
+            </p>
+          </form>
+
+          <p id="auth-error" class="auth-error hidden"></p>
+        </div>
+
+        <div class="auth-right">
+          <div class="auth-quote">
+            “My son and I learned more in these 6 months than he did in 2 years of business electives.
+            And we actually built something real.”
+          </div>
+          <div class="auth-quote-author">
+            David M.<br />
+            Silicon Valley Sprouts Alum
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.APP_CONFIG = {
+      firebaseConfig: {
+        apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
+        authDomain: "svsprouts-a1350.firebaseapp.com",
+        projectId: "svsprouts-a1350",
+        storageBucket: "svsprouts-a1350.firebasestorage.app",
+        messagingSenderId: "575688818236",
+        appId: "1:575688818236:web:648234b064245b9bf10d39",
+        measurementId: "G-6PTY3QCH6H"
+      },
+      stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
+    };
+  </script>
+  <script src="../app.js"></script>
+</body>
+
+</html>

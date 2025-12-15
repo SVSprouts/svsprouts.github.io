@@ -2,6 +2,16 @@
 (function () {
   const { firebaseConfig, stripePublishableKey } = window.APP_CONFIG || {};
 
+  // FEATURE: Parent articles link fixes
+  (function loadParentArticlesFeature() {
+    const page = (window.location.pathname.split("/").pop() || "").toLowerCase();
+    if (page !== "parent-corner.html") return;
+    const script = document.createElement("script");
+    script.src = "js/feature-parent-articles.js";
+    script.async = true;
+    document.head.appendChild(script);
+  })();
+
   // FEATURE: SEO enhancements (meta, canonical, JSON-LD)
   (function enhanceSEO() {
     const head = document.head;
