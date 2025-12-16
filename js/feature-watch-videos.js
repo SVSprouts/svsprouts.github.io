@@ -22,6 +22,8 @@
     heatmap: document.getElementById("heatmap-grid"),
     videoList: document.getElementById("video-list"),
     markBtn: document.getElementById("mark-watched"),
+    notes: document.getElementById("watch-notes"),
+    noteError: document.getElementById("watch-note-error"),
   };
 
   const fallbackVideos = [
@@ -87,11 +89,13 @@
       xp: 0,
       lastWatchDate: null,
       watchCounts: {},
+      learningNotes: {},
     };
   }
 
   function normalizeUserData(raw, totalDays) {
     const watchCounts = raw?.watchCounts || {};
+    const learningNotes = raw?.learningNotes || {};
     const day = Math.min(Math.max(raw?.currentDay || 1, 1), totalDays);
     return {
       currentDay: day,
@@ -101,6 +105,7 @@
       xp: raw?.xp || 0,
       lastWatchDate: raw?.lastWatchDate || null,
       watchCounts,
+      learningNotes,
     };
   }
 
@@ -250,6 +255,7 @@
               xp: userState.xp,
               lastWatchDate: userState.lastWatchDate,
               watchCounts: userState.watchCounts,
+              learningNotes: userState.learningNotes,
               updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
             },
             lastActive: window.firebase.firestore.FieldValue.serverTimestamp(),
@@ -262,11 +268,21 @@
   }
 
   function handleMark(uid) {
+    const noteText = currentNoteText();
+    if (!noteText) {
+      setNoteError("Please enter a quick learning note before marking watched.");
+      if (els.notes) els.notes.focus();
+      setMarkButtonState();
+      return;
+    }
+    setNoteError("");
+
     const day = userState.currentDay;
     const key = day;
     const currentCount = userState.watchCounts[key] || 0;
     const newCount = Math.min(currentCount + 1, 1 + MAX_REWATCHES);
     userState.watchCounts[key] = newCount;
+    userState.learningNotes[key] = noteText;
 
     const xpGain =
       newCount === 1 ? XP_FIRST_WATCH : newCount <= 1 + MAX_REWATCHES ? XP_REWATCH : 0;
@@ -282,6 +298,10 @@
     }
 
     render(userState);
+    if (els.notes) {
+      els.notes.value = "";
+    }
+    setMarkButtonState();
     saveState(uid);
   }
 
@@ -291,6 +311,7 @@
     els.markBtn.replaceWith(clone);
     clone.addEventListener("click", () => handleMark(uid));
     els.markBtn = clone;
+    setMarkButtonState();
   }
 
   async function init() {
@@ -305,6 +326,14 @@
     const totalDays = Math.max(videos.length || 0, DEFAULT_TOTAL_DAYS);
     userState = defaultState(totalDays);
     render(userState);
+
+    setMarkButtonState();
+    if (els.notes) {
+      els.notes.addEventListener("input", () => {
+        setNoteError("");
+        setMarkButtonState();
+      });
+    }
 
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
@@ -326,5 +355,22 @@
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
+  }
+
+  function currentNoteText() {
+    return (els.notes?.value || "").trim();
+  }
+
+  function setNoteError(msg) {
+    if (!els.noteError) return;
+    els.noteError.textContent = msg || "";
+    els.noteError.classList[msg ? "remove" : "add"]("hidden");
+  }
+
+  function setMarkButtonState() {
+    if (!els.markBtn) return;
+    const hasText = !!currentNoteText();
+    els.markBtn.disabled = !hasText;
+    els.markBtn.setAttribute("aria-disabled", hasText ? "false" : "true");
   }
 })();

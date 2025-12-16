@@ -1868,6 +1868,55 @@ h3 {
   transform: translateY(-1px);
 }
 
+.watch-notes-block {
+  margin: 10px auto 0;
+  max-width: 760px;
+  width: 100%;
+  background: #0b1220;
+  color: #e2e8f0;
+  border: 1px solid rgba(226, 232, 240, 0.2);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.watch-notes-block label {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.watch-notes-block textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(226, 232, 240, 0.4);
+  padding: 10px 12px;
+  font-size: 0.98rem;
+  background: #0f172a;
+  color: #e2e8f0;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.watch-notes-block textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.28);
+}
+
+.watch-notes-hint {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.watch-notes-error {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  color: #f87171;
+  font-weight: 700;
+}
+
 .challenge-hint {
   color: #0f172a;
   font-weight: 700;

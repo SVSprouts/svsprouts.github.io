@@ -57,11 +57,16 @@
             <iframe width="100%" height="420" src="https://www.youtube.com/embed/0lJKucu6HJc?si=cvJ4N2uEEkxrhK5T" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
       <div class="challenge-actions" style="justify-content: center; gap: 14px; margin-top: 10px;">
-          <p class="challenge-duration" style="color: #e2e8f0; margin: 0;">Be True to Yourself !</p>
-          <button class="pill-btn filled primary" id="mark-watched">Mark as Watched</button>
+          <button class="pill-btn filled primary" id="mark-watched">Submit Learning Notes to Mark as Watched</button>
             <a class="pill-btn filled" href="pricing.html" style="background: #f58234; color: #fff; border-color: #f58234;">
               Subscribe to Sprouts Plan for full experience
             </a>
+          </div>
+          <div class="watch-notes-block">
+            <label for="watch-notes">Learning Notes</label>
+            <textarea id="watch-notes" rows="3" placeholder="What did you learn or what will you try next?"></textarea>
+            <p class="watch-notes-hint">Learning sticks when you write it down.</p>
+            <p class="watch-notes-error hidden" id="watch-note-error">Please enter a quick learning note before marking watched.</p>
           </div>
     </div>
 

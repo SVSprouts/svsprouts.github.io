@@ -63,11 +63,19 @@
     }
 
     if (Array.isArray(remote.videos) && remote.videos.length) {
-      const watchedMap = new Map(remote.videos.map((v) => [v.day, !!v.watched]));
-      window.state.videos = window.state.videos.map((v) => ({
-        ...v,
-        watched: watchedMap.has(v.day) ? watchedMap.get(v.day) : v.watched,
-      }));
+      const remoteMap = new Map(remote.videos.map((v) => [v.day, v]));
+      window.state.videos = window.state.videos.map((v) => {
+        const remoteVid = remoteMap.get(v.day);
+        if (!remoteVid) return v;
+        const merged = {
+          ...v,
+          watched: !!remoteVid.watched,
+        };
+        if (typeof remoteVid.note === "string") {
+          merged.note = remoteVid.note;
+        }
+        return merged;
+      });
     }
 
     if (typeof window.renderAll === "function") {
@@ -86,10 +94,16 @@
       xpTarget: window.state.xpTarget,
       level: window.state.level,
       heatmap: window.state.heatmap,
-      videos: (window.state.videos || []).map((v) => ({
-        day: v.day,
-        watched: !!v.watched,
-      })),
+      videos: (window.state.videos || []).map((v) => {
+        const entry = {
+          day: v.day,
+          watched: !!v.watched,
+        };
+        if (v.note && typeof v.note === "string") {
+          entry.note = v.note;
+        }
+        return entry;
+      }),
       updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
     };
   }

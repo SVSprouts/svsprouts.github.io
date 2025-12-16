@@ -36,6 +36,8 @@ const elements = {
   markWatched: document.getElementById("mark-watched"),
   sparkle: document.getElementById("sparkle-burst"),
   videoList: document.getElementById("video-list"),
+  watchNotes: document.getElementById("watch-notes"),
+  watchNoteError: document.getElementById("watch-note-error"),
 };
 
 const RADIUS = 60;
@@ -114,8 +116,14 @@ function addSparkle(x, y) {
 }
 
 function handleWatchedClick(event) {
+  const noteText = elements.watchNotes ? elements.watchNotes.value.trim() : "";
+  if (!noteText && elements.watchNotes) {
+    setNoteError("Please enter a quick learning note before marking watched.");
+    elements.watchNotes.focus();
+    return;
+  }
   const today = state.day;
-  markVideoWatched(today);
+  markVideoWatched(today, noteText);
   state.day = Math.min(state.totalDays, state.day + 1);
   state.streak += 1;
   state.highest = Math.max(state.highest, state.streak);
@@ -131,6 +139,11 @@ function handleWatchedClick(event) {
 
   elements.markWatched.classList.add("success");
   setTimeout(() => elements.markWatched.classList.remove("success"), 300);
+
+  if (elements.watchNotes) {
+    elements.watchNotes.value = "";
+  }
+  setNoteError("");
 }
 
 function ensureVideo(day) {
@@ -144,10 +157,13 @@ function ensureVideo(day) {
   });
 }
 
-function markVideoWatched(day) {
+function markVideoWatched(day, noteText) {
   ensureVideo(day);
   const target = state.videos.find((v) => v.day === day);
-  if (target) target.watched = true;
+  if (target) {
+    target.watched = true;
+    if (noteText) target.note = noteText;
+  }
 }
 
 function tagClass(tag) {
@@ -215,6 +231,21 @@ function init() {
   if (elements.markWatched) {
     elements.markWatched.addEventListener("click", handleWatchedClick);
   }
+  if (elements.watchNotes) {
+    elements.watchNotes.addEventListener("input", () => {
+      setNoteError("");
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
+function setNoteError(msg) {
+  if (!elements.watchNoteError) return;
+  elements.watchNoteError.textContent = msg || "";
+  if (msg) {
+    elements.watchNoteError.classList.remove("hidden");
+  } else {
+    elements.watchNoteError.classList.add("hidden");
+  }
+}
