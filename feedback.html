@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Share Feedback | Silicon Valley Sprouts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase (compat for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+
+  <!-- Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+  <!-- Top Nav -->
+  <header class="nav">
+    <div class="nav-left">
+      <a class="logo" href="index.html">
+        <img class="logo-icon" src="image/sprouts_orange.png" alt="Silicon Valley Sprouts logo" />
+        <span class="logo-text">Silicon Valley Sprouts</span>
+      </a>
+      <nav class="nav-links">
+        <a href="curriculum.html">Curriculum</a>
+        <a href="watch-challenge.html">Daily Challenge</a>
+        <a href="parent-corner.html">Parent Hub</a>
+        <a href="pricing.html">Pricing</a>
+      </nav>
+    </div>
+    <div class="nav-right" id="nav-auth">
+      <button class="pill-btn" id="btn-open-signup">Sign Up</button>
+    </div>
+
+    <!-- After login -->
+    <div class="nav-right hidden" id="nav-user">
+      <span id="nav-user-email" class="nav-user-email"></span>
+      <button class="pill-btn outline" id="btn-logout">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="feedback-hero">
+      <div class="feedback-hero-content">
+        <p class="feedback-kicker">We read every note</p>
+        <h1>Share your feedback</h1>
+        <p class="feedback-lead">
+          Tell us what's working, what's missing, and how we can help you and your teen build faster together.
+        </p>
+        <div class="feedback-chips">
+          <span class="feedback-chip">Replies within a day</span>
+          <span class="feedback-chip">Parents & students welcome</span>
+          <span class="feedback-chip">Goes straight to the founders</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="feedback-grid">
+      <div class="feedback-card feedback-form-card">
+        <div class="feedback-form-header">
+          <p class="feedback-kicker subtle">Tell us what you think</p>
+          <h3>Send your feedback</h3>
+          <p class="feedback-muted">Your ideas shape the curriculum, the challenges, and the next set of features.</p>
+        </div>
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-row">
+            <label>
+              Full name
+              <input type="text" id="feedback-name" placeholder="Alex Rivera" required />
+            </label>
+            <label>
+              Email
+              <input type="email" id="feedback-email" placeholder="you@example.com" required />
+            </label>
+          </div>
+          <div class="feedback-row">
+            <label>
+              Role
+              <select id="feedback-role" required>
+                <option value="">Select one</option>
+                <option value="Parent">Parent / Guardian</option>
+                <option value="Student">Student</option>
+                <option value="Educator">Educator</option>
+                <option value="Community">Community partner</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+            <label>
+              How has Sprouts been for you?
+              <input type="text" id="feedback-experience" placeholder="Great for evenings with my teen..." />
+            </label>
+          </div>
+          <label>
+            What should we know?
+            <textarea id="feedback-message" rows="4" placeholder="Share wins, challenges, or feature requests" required></textarea>
+          </label>
+          <button class="pill-btn filled full-width" type="submit" id="feedback-submit">Send feedback</button>
+          <p id="feedback-status" class="feedback-status hidden" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="feedback-card feedback-aside">
+        <div class="feedback-aside-inner">
+          <h4>What happens next</h4>
+          <div class="feedback-step">
+            <div class="feedback-step-icon">01</div>
+            <div>
+              <div class="feedback-step-title">Straight to our team</div>
+              <p>Every submission is reviewed by the founders and logged in our product board.</p>
+            </div>
+          </div>
+          <div class="feedback-step">
+            <div class="feedback-step-icon">02</div>
+            <div>
+              <div class="feedback-step-title">Quick follow-up</div>
+              <p>We'll reach out within one business day if we have questions or updates.</p>
+            </div>
+          </div>
+          <div class="feedback-step">
+            <div class="feedback-step-icon">03</div>
+            <div>
+              <div class="feedback-step-title">Built into the roadmap</div>
+              <p>Common requests inform the next releases: daily challenges, parent hub, and more.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="feedback-aside-meta">
+          <div>
+            <div class="meta-label">Prefer email?</div>
+            <div class="meta-value">siliconvalleysprouts@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-columns">
+      <div>
+        <h4>Silicon Valley Sprouts</h4>
+        <p>Empowering parents and kids to build the future together.</p>
+      </div>
+      <div>
+        <h4>Program</h4>
+        <a href="index.html#curriculum">Curriculum</a>
+        <a href="pricing.html">Pricing</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#">About Us</a>
+        <a href="#">Success Stories</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+    <p class="footer-copy">&copy; <span id="footer-year"></span> Silicon Valley Sprouts Inc. All rights reserved.</p>
+  </footer>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-backdrop hidden" id="auth-modal-backdrop">
+    <div class="modal" id="auth-modal">
+      <button class="modal-close" id="auth-modal-close">&times;</button>
+      <div class="auth-grid">
+        <div class="auth-left">
+          <div class="modal-tabs">
+            <button class="modal-tab active" id="tab-signup">Sign Up</button>
+            <button class="modal-tab" id="tab-login">Sign In</button>
+          </div>
+
+          <form id="form-signup" class="auth-form">
+            <div class="auth-hero-icon">SV</div>
+            <h3 class="auth-title">Start Your Journey</h3>
+            <p class="auth-subtitle">Join the community of families building together.</p>
+            <label>
+              Email address
+              <input type="email" id="signup-email" placeholder="you@example.com" required />
+            </label>
+            <label>
+              Password
+              <input type="password" id="signup-password" minlength="6" placeholder="********" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Create Account</button>
+            <p class="auth-hint">
+              Already have an account? <span class="auth-switch" id="switch-to-login">Sign in</span>
+            </p>
+          </form>
+
+          <form id="form-login" class="auth-form hidden">
+            <div class="auth-hero-icon">SV</div>
+            <h3 class="auth-title">Welcome Back</h3>
+            <p class="auth-subtitle">Continue where you left off.</p>
+            <label>
+              Email address
+              <input type="email" id="login-email" placeholder="you@example.com" required />
+            </label>
+            <label class="password-row">
+              <span>Password</span>
+              <a class="forgot-link" href="#">Forgot password?</a>
+              <input type="password" id="login-password" placeholder="********" required />
+            </label>
+            <button class="pill-btn filled full-width" type="submit">Sign In</button>
+            <p class="auth-hint">
+              Don't have an account? <span class="auth-switch" id="switch-to-signup">Sign up for free</span>
+            </p>
+          </form>
+
+          <p id="auth-error" class="auth-error hidden"></p>
+        </div>
+
+        <div class="auth-right">
+          <div class="auth-quote">
+            "My son and I learned more in these 6 months than he did in 2 years of business electives.
+            And we actually built something real."
+          </div>
+          <div class="auth-quote-author">
+            David M.<br />
+            Silicon Valley Sprouts Alum
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG + APP JS -->
+  <script>
+    window.APP_CONFIG = {
+      firebaseConfig: {
+        apiKey: "AIzaSyAOWfR3KGG-ouX6Whl27lApxHMukZ2G9UE",
+        authDomain: "svsprouts-a1350.firebaseapp.com",
+        projectId: "svsprouts-a1350",
+        storageBucket: "svsprouts-a1350.firebasestorage.app",
+        messagingSenderId: "575688818236",
+        appId: "1:575688818236:web:648234b064245b9bf10d39",
+        measurementId: "G-6PTY3QCH6H"
+      },
+      stripePublishableKey: "YOUR_STRIPE_PUBLISHABLE_KEY"
+    };
+  </script>
+  <script src="app.js"></script>
+  <script src="js/feature-feedback.js"></script>
+</body>
+
+</html>

@@ -47,6 +47,53 @@
       .feature-waitlist .error {
         color: #b91c1c;
       }
+      .feature-feedback-cta {
+        margin: 14px 0 10px;
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #fed7aa;
+        background: #fff7ed;
+        box-shadow: 0 8px 18px rgba(234, 88, 12, 0.12);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+      }
+      .feature-feedback-cta h4 {
+        margin: 0 0 4px;
+        font-size: 1.05rem;
+        color: #9a3412;
+      }
+      .feature-feedback-cta p {
+        margin: 0;
+        color: #b45309;
+        font-size: 0.95rem;
+      }
+      .feature-feedback-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: #f58234;
+        color: #fff;
+        font-weight: 800;
+        border: 1px solid #ea580c;
+        text-decoration: none;
+        box-shadow: 0 10px 22px rgba(234, 88, 12, 0.26);
+        transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.12s ease;
+        white-space: nowrap;
+      }
+      .feature-feedback-button:hover {
+        background: #ea580c;
+        box-shadow: 0 12px 26px rgba(234, 88, 12, 0.32);
+        transform: translateY(-1px);
+      }
+      @media (max-width: 720px) {
+        .feature-feedback-cta {
+          grid-template-columns: 1fr;
+        }
+      }
     `;
     document.head.appendChild(style);
   }
@@ -64,6 +111,7 @@
   }
 
   function buildForm(container) {
+    if (!container) return;
     const block = document.createElement("div");
     block.className = "feature-waitlist";
 
@@ -141,12 +189,37 @@
     container.appendChild(block);
   }
 
+  function buildFeedbackCta(container) {
+    if (!container || container.querySelector(".feature-feedback-cta")) return;
+    const wrap = document.createElement("div");
+    wrap.className = "feature-feedback-cta";
+
+    const copyWrap = document.createElement("div");
+    const h4 = document.createElement("h4");
+    h4.textContent = "Do you have any feedback on the content or plans?";
+    const p = document.createElement("p");
+    p.textContent = "Share what would make Sprouts a better fit for your family—the founders read every note.";
+    copyWrap.appendChild(h4);
+    copyWrap.appendChild(p);
+
+    const btn = document.createElement("a");
+    btn.href = "feedback.html";
+    btn.className = "feature-feedback-button";
+    btn.textContent = "Share your feedback";
+
+    wrap.appendChild(copyWrap);
+    wrap.appendChild(btn);
+    container.appendChild(wrap);
+  }
+
   function init() {
     ensureStyles();
     const container = getContainer();
     if (!container) return;
-    if (container.querySelector(".feature-waitlist")) return;
-    buildForm(container);
+    if (!container.querySelector(".feature-waitlist")) {
+      buildForm(container);
+    }
+    buildFeedbackCta(container);
   }
 
   if (document.readyState === "loading") {
