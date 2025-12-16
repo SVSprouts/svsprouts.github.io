@@ -65,9 +65,10 @@
           <div class="watch-notes-block">
             <label for="watch-notes">Learning Notes</label>
             <textarea id="watch-notes" rows="3" placeholder="What did you learn or what will you try next?"></textarea>
-            <p class="watch-notes-hint">Learning sticks when you write it down.</p>
+            <p class="watch-notes-hint">Learning notes are not auto saved.</p>
             <p class="watch-notes-error hidden" id="watch-note-error">Please enter a quick learning note before marking watched.</p>
           </div>
+            
     </div>
 
         <div class="hero-stats" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; align-items: stretch;">
@@ -111,6 +112,8 @@
           </div>
         </div>
       </div>
+                          <button class="pill-btn outline go-today-btn" type="button" id="go-today-btn">Go to Today's Video</button>
+
     </section>
 
     <section class="streak-section">
@@ -136,6 +139,7 @@
 
     <section class="video-list-section">
       <div class="section-heading">
+        <button class="pill-btn outline go-today-btn" type="button" id="go-today-btn">Go to Today's Video</button>
         <h2>Past & Due Videos</h2>
         <p>Everything up to today—catch up or rewatch to keep your streak strong.</p>
       </div>

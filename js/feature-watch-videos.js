@@ -24,7 +24,10 @@
     markBtn: document.getElementById("mark-watched"),
     notes: document.getElementById("watch-notes"),
     noteError: document.getElementById("watch-note-error"),
+    goTodayBtn: document.getElementById("go-today-btn"),
   };
+
+  let selectedDay = null;
 
   const fallbackVideos = [
     {
@@ -161,9 +164,11 @@
       const meta = document.createElement("div");
       meta.className = "video-meta";
 
-      const dayEl = document.createElement("span");
-      dayEl.className = "video-day";
-      dayEl.textContent = `Day ${video.day}`;
+      const dayEl = document.createElement("button");
+      dayEl.type = "button";
+      dayEl.className = "video-day-link";
+      dayEl.textContent = `Go to Day ${video.day}`;
+      dayEl.addEventListener("click", () => handleVideoSelect(video.day));
 
       const count = state.watchCounts?.[video.day] || 0;
       const status = document.createElement("span");
@@ -206,8 +211,8 @@
     }
   }
 
-  function render(state) {
-    const current = state.currentDay;
+  function render(state, viewDay) {
+    const current = viewDay || selectedDay || state.currentDay;
     const displayDay =
       state.watchCounts?.[current] && state.watchCounts[current] > 0
         ? current
@@ -223,6 +228,8 @@
     renderRing(displayDay, total);
     renderHeatmap(state);
     renderVideoList(state);
+    setNotesFromState(current);
+    setMarkButtonState();
   }
 
   function computeStreaks(state) {
@@ -248,7 +255,6 @@
         .set(
           {
             watchChallenge: {
-              currentDay: userState.currentDay,
               totalDays: userState.totalDays,
               streak: userState.streak,
               highest: userState.highest,
@@ -277,7 +283,7 @@
     }
     setNoteError("");
 
-    const day = userState.currentDay;
+    const day = selectedDay || userState.currentDay;
     const key = day;
     const currentCount = userState.watchCounts[key] || 0;
     const newCount = Math.min(currentCount + 1, 1 + MAX_REWATCHES);
@@ -293,11 +299,11 @@
     userState.highest = streakInfo.highest;
     userState.lastWatchDate = streakInfo.lastWatchDate;
 
-    if (newCount === 1 && day < userState.totalDays) {
+    if (newCount === 1 && day < userState.totalDays && (!selectedDay || day === userState.currentDay)) {
       userState.currentDay = day + 1;
     }
 
-    render(userState);
+    render(userState, selectedDay || day);
     if (els.notes) {
       els.notes.value = "";
     }
@@ -334,6 +340,9 @@
         setMarkButtonState();
       });
     }
+    if (els.goTodayBtn) {
+      els.goTodayBtn.addEventListener("click", handleGoToday);
+    }
 
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
@@ -347,6 +356,7 @@
       userState = normalizeUserData(remote, totalDays);
       userState.currentDay = selectCurrentDay(userState, totalDays);
       userState.totalDays = totalDays;
+      selectedDay = null;
       render(userState);
     });
   }
@@ -359,6 +369,37 @@
 
   function currentNoteText() {
     return (els.notes?.value || "").trim();
+  }
+
+  function setNotesFromState(day) {
+    if (!els.notes || !userState) return;
+    const note = userState.learningNotes?.[day] || "";
+    els.notes.value = note;
+  }
+
+  function handleVideoSelect(day) {
+    if (!userState) return;
+    selectedDay = day;
+    setNotesFromState(day);
+    setNoteError("");
+    render(userState, day);
+    setMarkButtonState();
+    const hero = document.querySelector(".challenge-hero");
+    if (hero) {
+      hero.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function handleGoToday() {
+    selectedDay = null;
+    setNotesFromState(userState?.currentDay || 1);
+    setNoteError("");
+    render(userState);
+    setMarkButtonState();
+    const hero = document.querySelector(".challenge-hero");
+    if (hero) {
+      hero.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   function setNoteError(msg) {

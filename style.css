@@ -1917,6 +1917,21 @@ h3 {
   font-weight: 700;
 }
 
+.go-today-btn {
+  margin-top: 10px;
+  border-color: #ea580c;
+  background: #f58234;
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(234, 88, 12, 0.24);
+}
+
+.go-today-btn:hover {
+  border-color: #ea580c;
+  background: #ea580c;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .challenge-hint {
   color: #0f172a;
   font-weight: 700;
@@ -2234,6 +2249,25 @@ h3 {
 .video-day {
   font-weight: 800;
   color: #2563eb;
+}
+
+.video-day-link {
+  background: #f58234;
+  border: 1px solid #ea580c;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.12s ease;
+  box-shadow: 0 10px 20px rgba(234, 88, 12, 0.22);
+}
+
+.video-day-link:hover {
+  background: #ea580c;
+  box-shadow: 0 12px 24px rgba(234, 88, 12, 0.26);
+  transform: translateY(-1px);
 }
 
 .video-title {
