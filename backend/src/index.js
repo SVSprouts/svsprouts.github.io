@@ -6,8 +6,10 @@ const stripeLib = require("stripe");
 admin.initializeApp();
 const db = admin.firestore();
 
-// Use functions:config:set stripe.secret_key="sk_live_..." stripe.webhook_secret="whsec_..."
+// Use functions:config:set stripe.secret_key="sk_live_..." stripe.webhook_secret="whsec_..." stripe.basic_price_id="price_basic" stripe.sprouts_price_id="price_sprouts"
 const stripe = stripeLib(functions.config().stripe.secret_key);
+const BASIC_PRICE_ID = functions.config().stripe.basic_price_id;
+const SPROUTS_PRICE_ID = functions.config().stripe.sprouts_price_id;
 
 // Callable to create a Checkout Session
 exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
@@ -17,6 +19,8 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
   }
 
   const priceId = data.priceId;
+  const planTier = (data.planTier || "").toLowerCase();
+  const normalizedTier = planTier === "basic" ? "basic" : planTier === "sprouts" ? "sprouts" : "";
   if (!priceId) {
     throw new functions.https.HttpsError("invalid-argument", "Missing priceId");
   }
@@ -50,13 +54,30 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
     cancel_url: "https://YOUR_GITHUB_PAGES_URL/#/cancel",
     metadata: {
       firebaseUid: uid,
+      priceId,
+      ...(normalizedTier ? { planTier: normalizedTier } : {}),
     },
   });
 
   return { id: session.id };
 });
 
-// Stripe webhook to mark user as paid
+function resolveTier(session) {
+  const metaTier = (session.metadata?.planTier || session.metadata?.plan || "").toLowerCase();
+  if (metaTier === "sprouts") return "sprouts";
+  if (metaTier === "basic") return "basic";
+
+  const metaPrice = session.metadata?.priceId;
+  const priceId = metaPrice || "";
+
+  if (SPROUTS_PRICE_ID && priceId === SPROUTS_PRICE_ID) return "sprouts";
+  if (BASIC_PRICE_ID && priceId === BASIC_PRICE_ID) return "basic";
+
+  // Default to Sprouts if unknown price/tier
+  return "sprouts";
+}
+
+// Stripe webhook to mark user tier
 exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
   const sig = req.headers["stripe-signature"];
   const webhookSecret = functions.config().stripe.webhook_secret;
@@ -74,10 +95,12 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
       const uid = session.metadata?.firebaseUid;
+      const planTier = resolveTier(session);
       if (uid) {
         await db.collection("users").doc(uid).set(
           {
-            subscriptionStatus: "sprouts",
+            subscriptionStatus: planTier,
+            planTier,
             lastPaymentAt: admin.firestore.FieldValue.serverTimestamp(),
           },
           { merge: true }
