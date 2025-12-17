@@ -214,9 +214,11 @@
   function render(state, viewDay) {
     const current = viewDay || selectedDay || state.currentDay;
     const displayDay =
-      state.watchCounts?.[current] && state.watchCounts[current] > 0
+      viewDay || selectedDay
         ? current
-        : Math.max(1, current - 1);
+        : state.watchCounts?.[current] && state.watchCounts[current] > 0
+          ? current
+          : Math.max(1, current - 1);
     const total = state.totalDays;
     const video =
       videos.find((v) => v.day === current) || videos[current - 1] || videos[videos.length - 1];
@@ -303,7 +305,10 @@
       userState.currentDay = day + 1;
     }
 
-    render(userState, selectedDay || day);
+    const nextDay = Math.min(day + 1, userState.totalDays);
+    selectedDay = nextDay;
+    userState.currentDay = nextDay;
+    render(userState, nextDay);
     if (els.notes) {
       els.notes.value = "";
     }
@@ -331,7 +336,8 @@
 
     const totalDays = Math.max(videos.length || 0, DEFAULT_TOTAL_DAYS);
     userState = defaultState(totalDays);
-    render(userState);
+    userState.currentDay = computeNextDueDay(userState);
+    render(userState, userState.currentDay);
 
     setMarkButtonState();
     if (els.notes) {
@@ -354,10 +360,10 @@
       const snap = await db.collection("users").doc(user.uid).get();
       const remote = snap.data()?.watchChallenge || {};
       userState = normalizeUserData(remote, totalDays);
-      userState.currentDay = selectCurrentDay(userState, totalDays);
+      userState.currentDay = computeNextDueDay(userState);
       userState.totalDays = totalDays;
-      selectedDay = null;
-      render(userState);
+      selectedDay = userState.currentDay;
+      render(userState, userState.currentDay);
     });
   }
 
@@ -377,6 +383,17 @@
     els.notes.value = note;
   }
 
+  function computeNextDueDay(state) {
+    const counts = state.watchCounts || {};
+    let lastWatched = 0;
+    Object.keys(counts).forEach((k) => {
+      const day = Number(k);
+      if (counts[k] > 0 && day > lastWatched) lastWatched = day;
+    });
+    const target = Math.min((lastWatched || 0) + 1, state.totalDays);
+    return Math.max(1, target);
+  }
+
   function handleVideoSelect(day) {
     if (!userState) return;
     selectedDay = day;
@@ -391,10 +408,12 @@
   }
 
   function handleGoToday() {
-    selectedDay = null;
-    setNotesFromState(userState?.currentDay || 1);
+    const target = computeNextDueDay(userState);
+    userState.currentDay = target;
+    selectedDay = target;
+    setNotesFromState(target);
     setNoteError("");
-    render(userState);
+    render(userState, target);
     setMarkButtonState();
     const hero = document.querySelector(".challenge-hero");
     if (hero) {
