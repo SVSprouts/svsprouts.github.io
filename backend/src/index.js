@@ -50,8 +50,8 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
         quantity: 1,
       },
     ],
-    success_url: "https://YOUR_GITHUB_PAGES_URL/#/success",
-    cancel_url: "https://YOUR_GITHUB_PAGES_URL/#/cancel",
+    success_url: "https://siliconvalleysprouts.com",
+    cancel_url: "https://siliconvalleysprouts.com",
     metadata: {
       firebaseUid: uid,
       priceId,

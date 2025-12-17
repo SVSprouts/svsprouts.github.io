@@ -142,7 +142,12 @@
   }
 
   function gateWatch() {
-    const limit = tierCache === TIER.SPROUTS ? Infinity : 5;
+    if (tierCache !== TIER.SPROUTS) {
+      const overlay = document.getElementById("feature-tier-watch-overlay");
+      if (overlay && overlay.parentElement) overlay.parentElement.removeChild(overlay);
+      return;
+    }
+    const limit = 5;
     if (limit === Infinity) return;
 
     const list = document.getElementById("video-list");
