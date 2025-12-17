@@ -159,6 +159,16 @@
   // Init Stripe
   const stripe = Stripe(stripePublishableKey);
 
+  // FEATURE: Tier Gating loader (Watch page)
+  (function loadTierGating() {
+    const page = (location.pathname.split("/").pop() || "").toLowerCase();
+    if (page !== "watch-challenge.html") return;
+    const script = document.createElement("script");
+    script.src = "js/feature-tier-gating.js";
+    script.async = true;
+    document.head.appendChild(script);
+  })();
+
   // DOM Elements
   const footerYear = document.getElementById("footer-year");
   if (footerYear) footerYear.textContent = new Date().getFullYear();
