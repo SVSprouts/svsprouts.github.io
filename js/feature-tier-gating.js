@@ -142,7 +142,7 @@
   }
 
   function gateWatch() {
-    if (tierCache !== TIER.SPROUTS) {
+    if (tierCache === TIER.SPROUTS) {
       const overlay = document.getElementById("feature-tier-watch-overlay");
       if (overlay && overlay.parentElement) overlay.parentElement.removeChild(overlay);
       return;
