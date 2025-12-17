@@ -2,7 +2,8 @@
 (function () {
   const PAGE = (location.pathname.split("/").pop() || "").toLowerCase();
   const isWatchPage = PAGE === "watch-challenge.html";
-  if (!isWatchPage) return;
+  const isCurriculumPage = PAGE === "curriculum.html" || PAGE.startsWith("course-month");
+  if (!isWatchPage && !isCurriculumPage) return;
 
   const TIER = {
     STARTER: "starter",
@@ -97,6 +98,47 @@
   function hideModal() {
     const modal = document.getElementById("feature-tier-modal");
     if (modal) modal.style.display = "none";
+  }
+
+  function gateMonths() {
+    if (!isCurriculumPage) return;
+    const cards = Array.from(document.querySelectorAll(".month-card"));
+    cards.forEach((card) => {
+      const label = card.querySelector(".month-label") || card;
+      const text = (label.textContent || "").toLowerCase();
+      const match = text.match(/month\\s+(\\d+)/);
+      const num = match ? Number(match[1]) : null;
+      if (!num) return;
+      if (tierCache === TIER.STARTER && num >= 2) {
+        lockElement(card, "Month 2+ is available in Sprouts Basic and Sprouts.");
+        return;
+      }
+      if (tierCache === TIER.BASIC && num >= 7) {
+        lockElement(card, "Month 7+ is available in Sprouts.");
+      }
+    });
+    if (PAGE.startsWith("course-month")) {
+      const match = PAGE.match(/course-month(\\d+)/);
+      const num = match ? Number(match[1]) : null;
+      if (!num) return;
+      if (tierCache === TIER.STARTER && num >= 2) {
+        showModal("Month 2+ is available in Sprouts Basic and Sprouts.");
+      } else if (tierCache === TIER.BASIC && num >= 7) {
+        showModal("Month 7+ is available in Sprouts.");
+      }
+    }
+  }
+
+  function gateAdvanced() {
+    if (!isCurriculumPage) return;
+    if (tierCache === TIER.SPROUTS) return;
+    const selectors = ['[data-lesson-type="advanced"]', ".advanced", ".advanced-lesson"];
+    let targets = Array.from(document.querySelectorAll(selectors.join(",")));
+    const headings = Array.from(document.querySelectorAll("h2,h3,h4")).filter((h) =>
+      (h.textContent || "").toLowerCase().includes("advanced")
+    );
+    targets = targets.concat(headings.map((h) => h.parentElement).filter(Boolean));
+    targets.forEach((el) => lockElement(el, "Advanced lessons are available in Sprouts."));
   }
 
   function gateWatch() {
@@ -237,6 +279,8 @@
 
   async function run() {
     await initTier();
+    gateMonths();
+    gateAdvanced();
     gateWatch();
     window.getUserTier = function () {
       return tierCache;

@@ -159,10 +159,12 @@
   // Init Stripe
   const stripe = Stripe(stripePublishableKey);
 
-  // FEATURE: Tier Gating loader (Watch page)
+  // FEATURE: Tier Gating loader (Watch + Curriculum)
   (function loadTierGating() {
     const page = (location.pathname.split("/").pop() || "").toLowerCase();
-    if (page !== "watch-challenge.html") return;
+    const shouldLoad =
+      page === "watch-challenge.html" || page === "curriculum.html" || page.startsWith("course-month");
+    if (!shouldLoad) return;
     const script = document.createElement("script");
     script.src = "js/feature-tier-gating.js";
     script.async = true;
@@ -190,11 +192,11 @@
     if (existing && existing.parentElement) existing.parentElement.removeChild(existing);
     if (!navUserEmail) return;
     const labelMap = {
-      free: "Sprouts Starter",
+      starter: "Sprouts Starter",
       basic: "Sprouts Basic",
-      paid: "Sprouts",
+      sprouts: "Sprouts",
     };
-    const text = labelMap[status] || "Free";
+    const text = labelMap[status] || "Sprouts Starter";
     const badge = document.createElement("span");
     badge.id = "feature-subscription-badge";
     badge.textContent = text;
@@ -203,8 +205,8 @@
     badge.style.borderRadius = "999px";
     badge.style.fontSize = "0.8rem";
     badge.style.fontWeight = "700";
-    badge.style.background = status === "paid" ? "#f58234" : "#e2e8f0";
-    badge.style.color = status === "paid" ? "#fff" : "#0f172a";
+    badge.style.background = status === "sprouts" ? "#f58234" : "#e2e8f0";
+    badge.style.color = status === "sprouts" ? "#fff" : "#0f172a";
     navUserEmail.insertAdjacentElement("afterend", badge);
   }
 
@@ -422,7 +424,14 @@
   const badgesGrid = document.getElementById("badges-grid");
   const overallProgressFill = document.getElementById("overall-progress-fill");
   const overallProgressLabel = document.getElementById("overall-progress-label");
-  let subscriptionStatus = "free";
+  let subscriptionStatus = "starter";
+
+  function normalizeTier(raw) {
+    const val = (raw || "").toLowerCase();
+    if (val === "sprouts" || val === "paid") return "sprouts";
+    if (val === "basic") return "basic";
+    return "starter";
+  }
   let checkoutInProgress = false;
 
   // Month data
@@ -514,7 +523,7 @@
           openAuthModal("signup");
           return;
         }
-        if (month > 1 && subscriptionStatus !== "paid") {
+        if (month > 1 && (subscriptionStatus === "starter" || (subscriptionStatus === "basic" && month > 6))) {
           e.preventDefault();
           startCheckout();
         }
@@ -545,7 +554,7 @@
           openAuthModal("signup");
           return;
         }
-        if (access === "paid" && subscriptionStatus !== "paid") {
+        if (access === "paid" && subscriptionStatus !== "sprouts") {
           e.preventDefault();
           startCheckout();
         }
@@ -713,7 +722,7 @@
       hideElement(navUser);
       showElement(navAuth);
       updateMonthLinkTargets(false);
-      renderSubscriptionBadge("free");
+      renderSubscriptionBadge("starter");
     }
   });
 
@@ -726,7 +735,7 @@
       await ref.set({
         email: user.email || "",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        subscriptionStatus: "free", // "free" or "paid"
+        subscriptionStatus: "starter",
         months: {
           1: { progress: 0 },
           2: { progress: 0 },
@@ -744,7 +753,7 @@
     const snap = await ref.get();
     if (!snap.exists) return;
     const data = snap.data();
-    subscriptionStatus = data.subscriptionStatus || "free";
+    subscriptionStatus = normalizeTier(data.subscriptionStatus);
 
     renderDashboard(data);
     attachMonthLinkGuards();
@@ -807,7 +816,7 @@
       const btn = document.createElement("a");
       btn.className = "pill-btn outline";
       btn.href = COURSE_PATHS[m.id] || "course-month1.html";
-      if (m.id > 1 && subscriptionStatus !== "paid") {
+      if (m.id > 1 && (subscriptionStatus === "starter" || (subscriptionStatus === "basic" && m.id > 6))) {
         btn.textContent = "Upgrade";
         btn.href = "pricing.html";
       } else {

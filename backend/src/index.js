@@ -77,7 +77,7 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
       if (uid) {
         await db.collection("users").doc(uid).set(
           {
-            subscriptionStatus: "paid",
+            subscriptionStatus: "sprouts",
             lastPaymentAt: admin.firestore.FieldValue.serverTimestamp(),
           },
           { merge: true }

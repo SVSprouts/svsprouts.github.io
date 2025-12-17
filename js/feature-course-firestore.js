@@ -282,7 +282,7 @@
       await ref.set({
         email: user.email || "",
         createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
-        subscriptionStatus: "free",
+        subscriptionStatus: "starter",
         months: {
           1: { progress: 0 },
           2: { progress: 0 },
