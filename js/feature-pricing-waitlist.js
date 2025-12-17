@@ -20,6 +20,7 @@
       .feature-waitlist h4 {
         margin: 0 0 8px;
         font-size: 1.1rem;
+        color: #f58234;
       }
       .feature-waitlist p {
         margin: 0 0 12px;
